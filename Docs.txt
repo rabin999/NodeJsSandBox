@@ -1,0 +1,74 @@
+Should be consider
+	- key must be camelCase
+
+Components: 
+	- User (members)
+	- Project
+	- Comment
+	- Feedback - Emoji
+
+Features:
+	- Login
+	- Forget Password
+	- User Profile Update
+	- Notifications
+	- Filters (by months: list of months)
+	- Project Update Detail Page
+	- Project Team Member Detail ( Project Manager, Developer, Designer, QA, Dev Ops)could be Others
+	- Comment : TextBox
+
+----------------
+DataBase Schema:
+----------------
+	- User:
+		- id
+		- fullname
+		- email
+		- images
+		- password
+		- role (admin, project manager, clients)
+		- designation (Relation: Degination)
+
+	- Designation
+		- id
+		- title	
+
+	- Project:
+		- id
+		- title
+		- logo
+		- description (text)
+		- members ( Relations: User)
+		- owner (Relations: User)
+		- project_type (Relation: Project Types)
+		- created_at (datetime)
+
+	- Project Update:
+		- id	
+		- description
+		- meta (link, credential: email, password, etc)
+		- remark ( eg: release or any info message)
+		- created_at (datetime)
+
+	- Project Types
+		- id
+		- title
+	
+	- Comment:
+		- id
+		- text
+		- project (Relation: Project)
+		- user (Relation: User)
+	
+	- Feedback
+		- id
+		- symbol (emoji)
+		- project (Relation: project)
+		- user (Relation: User)
+	
+	- Notifications
+		- id
+		- message
+		- user (client) : Relation (User)
+
+
