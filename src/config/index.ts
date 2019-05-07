@@ -3,6 +3,9 @@ const config = {
     // APPLICATION NAME
     app_name: "Client APP",
 
+    // SEEDERS
+    seed: false,
+
     // PORT
     port: 3000,
 

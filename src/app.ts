@@ -7,6 +7,8 @@ import bluebird from "bluebird"
 import mongoose from "mongoose"
 import config from "./config"
 import Routes from "./routes/v1"
+import errorMiddleware from "./middleware/error.middleware"
+import Seeder from "./services/database/seeder"
 
 class App {
 
@@ -20,6 +22,7 @@ class App {
 
         this.connectToDatabase()
         this.initializeMiddlewares()
+        this.initializeErrorHandling()
         this.initializeRoutes()
     }
 
@@ -36,10 +39,20 @@ class App {
         const connection = mongoose.connect(connectionUrl, {
             useNewUrlParser: true
         })
-        .then(() => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ })
+        .then(() => { 
+            
+            /**
+             * Run Seeder
+             */
+            if (config.seed)
+                new Seeder()
+
+        })
         .catch(err => {
             console.log(`MongoDB connection error. Please make sure MongoDB is running ${err}`)
         })
+        
+        mongoose.set('useCreateIndex', true)
     }
 
     /**
@@ -54,7 +67,11 @@ class App {
         this.app.use(lusca.xssProtection(true))
         this.app.use(cors())
     }
-
+    
+    private initializeErrorHandling()
+    {
+        this.app.use(errorMiddleware)
+    }
     /**
      * Routes
      */

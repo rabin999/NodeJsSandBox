@@ -1,4 +1,4 @@
-import { Router } from "express"
+import { Router, Request, Response } from "express"
 import userRoutes from "../components/user/routes/user.route"
 import ProjectRoutes from "../components/project/routes/project.route"
 
@@ -14,6 +14,10 @@ class BaseRoutes {
 
     private initializeBaseRoutes() 
     {
+        this.route.get("/", (req: Request, res: Response) => {
+            res.send('welcome to API')
+        })
+
         this._route.use("/users", new userRoutes().route)
         this._route.use("/projects", new ProjectRoutes().route)
     }
