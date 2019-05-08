@@ -1,23 +1,32 @@
 import { NextFunction, Request, Response } from "express"
 import HttpException from "../exceptions/HttpException"
 
-/**
- * @param  {HttpException} error
- * @param  {Request} request
- * @param  {Response} response
- * @param  {NextFunction} next
- */
 function errorMiddleware(error: HttpException, request: Request, response: Response, next: NextFunction) {
-    
-    const status = error.status || 500
-    const message = error.message || 'Something went wrong'
 
-    response
-      .status(status)
-      .send({
-        message,
+    /**
+     * Parse JSON Syntax error
+     */
+    if (error instanceof SyntaxError) {
+
+      const status = 500
+      const message = error.message
+
+      response.status(status).send(new HttpException({
         status,
+        message
+      }).parse())
+
+    } else {
+
+      const status = error.params.status || 500
+      const message = error.message || "Something went wrong"
+
+      response.status(status).send({
+          message,
+          status,
       })
+
+    }
   }
   
   export default errorMiddleware

@@ -35,11 +35,16 @@ class UserController {
                 const newUser = await user.populate("designation").execPopulate()
                 res.json(newUser)
             } else {
-                next(new DesignationNotFoundException(designation))
+                const err = new DesignationNotFoundException(designation)
+                return res.status(404).json(err.parse())
             }
             
         } catch (error) {
-            res.status(500).json(error)
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            }) 
+            res.status(500).json(err.parse())
         }
     }
 
@@ -65,11 +70,11 @@ class UserController {
      */
     public delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user = await this.userExists(req.params.id)
+            const user = await User.findById(req.params.id)
 
             if (user != null) {
                 await User.deleteOne({ _id: user._id })
-                return res.json({ message: "User deleted successfully" })
+                return res.json({ message: `User id ${req.params.id} deleted successfully` })
             } else {
                 const err = new UserNotFoundException(req.params.id)
                 return res.status(404).json(err.parse())
@@ -81,14 +86,6 @@ class UserController {
             }) 
             res.status(500).json(err.parse())
         }
-    }
-
-    /**
-     * @param  {string} userId
-     */
-    private userExists(userId : string)
-    {
-        return User.findOne({ _id: userId })
     }
 }
 

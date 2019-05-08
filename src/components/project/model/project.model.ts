@@ -16,7 +16,7 @@ const projectSchema = new mongoose.Schema({
         ref: "user",
         required: true
     }],
-    owner: [{
+    owners: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true
@@ -24,9 +24,11 @@ const projectSchema = new mongoose.Schema({
     projectType: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "projectType",
+    },
+    endDate: {
+        type: Date,
         required: true
     },
-    endDate: Date,
     detail: String
 }, { 
     timestamps: true

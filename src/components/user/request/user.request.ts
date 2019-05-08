@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express"
 import User from "../model/user.model"
 import UserEmailAlreadyExistsException from "../../../exceptions/UserEmailAlreadyExistsException"
 import HttpException from "../../../exceptions/HttpException"
-import ExpressValidator from "express-validator"
 
 
 const validation = async (req: Request, res: Response, next: NextFunction) => {

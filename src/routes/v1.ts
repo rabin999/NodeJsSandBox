@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express"
 import userRoutes from "../components/user/routes/api.route"
-import ProjectRoutes from "../components/project/routes/project.route"
+import ProjectTypeRoutes from "../components/projectTypes/routes/api.route"
+import ProjectRoutes from "../components/project/routes/api.route"
 
 class BaseRoutes {
 
@@ -19,6 +20,7 @@ class BaseRoutes {
         })
 
         this._route.use("/users", new userRoutes().route)
+        this._route.use("/project-types", new ProjectTypeRoutes().route)
         this._route.use("/projects", new ProjectRoutes().route)
     }
 

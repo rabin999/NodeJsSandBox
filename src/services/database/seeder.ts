@@ -2,6 +2,7 @@ import bluebird from "bluebird"
 import mongoose from "mongoose"
 import config from "../../config"
 import Designation from "../../components/designation/model/designation.model"
+import ProjectType from "../../components/projectTypes/model/projectType.model"
 
 class Seeder {
     constructor () {
@@ -39,6 +40,7 @@ class Seeder {
     private seed() 
     {
         this.designationSeeder()
+        this.projectTypeSeeder()
     }
 
     private designationSeeder () 
@@ -67,6 +69,24 @@ class Seeder {
             },
             {
                 title: "Quality Control"
+            }
+        ])
+    }
+
+    private projectTypeSeeder () 
+    {
+        ProjectType.insertMany([
+            {
+                title: "Machine Learning"
+            },
+            {
+                title: "Artificial Intelligence"
+            },
+            {
+                title: "Mobile Developmet"
+            },
+            {
+                title: "Web Development"
             }
         ])
     }
