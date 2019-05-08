@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import User  from "../model/user.model"
-import Designation from "../../designation/model/designation.model";
+import Designation from "../../designation/model/designation.model"
+import DesignationNotFoundException from "../../../exceptions/DesignationNotFoundException"
 
 class UserController {
     /**
@@ -13,20 +14,30 @@ class UserController {
      */
     public singUp = async (req: Request, res: Response, next: NextFunction) => {
 
-        const userDesignation = await Designation.create({
-            title: "Hello Manager 5"
-        })
+        const fullname = req.body.fullname.trim()
+        const { email, password, confirmPassword, role, designation } = req.body
 
-        const user = await User.create({
-            fullname: "John Mayer 5",
-            email: "jsoh5sfdn@gmail.com",
-            password: "password@1",
-            role: "admin",
-            designation: userDesignation.id
-        })
+        try {
+            const selectedDesingation = await Designation.findById(designation)
 
-        const newUser = await user.populate("designation").execPopulate()
-        res.json(user)
+            if (selectedDesingation != null) {
+                const user = await User.create({
+                    fullname,
+                    email,
+                    password,
+                    role,
+                    designation: selectedDesingation.id
+                })
+                
+                const newUser = await user.populate("designation").execPopulate()
+                res.json(newUser)
+            } else {
+                next(new DesignationNotFoundException(designation))
+            }
+            
+        } catch (error) {
+            res.status(500).json(error)
+        }
     }
 
     /**

@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">45.45% </span>
+        <span class="strong">33.33% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>5/11</span>
+        <span class='fraction'>6/18</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/0</span>
+        <span class='fraction'>0/2</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">25% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>1/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">50% </span>
+        <span class="strong">35.29% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>5/10</span>
+        <span class='fraction'>6/17</span>
       </div>
     </div>
     <p class="quiet">
@@ -90,7 +90,19 @@
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -106,19 +118,29 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,7 +158,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response, NextFunction } from "express"
 import User  from "../model/user.model"
-import Designation from "../../designation/model/designation.model";
+import Designation from "../../designation/model/designation.model"
+import DesignationNotFoundException from "../../../exceptions/DesignationNotFoundException"
 &nbsp;
 class UserController {
     /**
@@ -149,20 +172,30 @@ class UserController {
      */
     public singUp = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response, next: NextFunction) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
 &nbsp;
-        const userDesignation = <span class="cstat-no" title="statement not covered" >await Designation.create({</span>
-            title: "Hello Manager 5"
-        })
+        const fullname = <span class="cstat-no" title="statement not covered" >req.body.fullname.trim()</span>
+        const { email, password, confirmPassword, role, designation } = <span class="cstat-no" title="statement not covered" >req.body</span>
 &nbsp;
-        const user = <span class="cstat-no" title="statement not covered" >await User.create({</span>
-            fullname: "John Mayer 5",
-            email: "jsoh5sfdn@gmail.com",
-            password: "password@1",
-            role: "admin",
-            designation: userDesignation.id
-        })
+<span class="cstat-no" title="statement not covered" >        try {</span>
+            const selectedDesingation = <span class="cstat-no" title="statement not covered" >await Designation.findById(designation)</span>
 &nbsp;
-        const newUser = <span class="cstat-no" title="statement not covered" >await user.populate("designation").execPopulate()</span>
-<span class="cstat-no" title="statement not covered" >        res.json(user)</span>
+<span class="cstat-no" title="statement not covered" >            if (selectedDesingation != null) {</span>
+                const user = <span class="cstat-no" title="statement not covered" >await User.create({</span>
+                    fullname,
+                    email,
+                    password,
+                    role,
+                    designation: selectedDesingation.id
+                })
+                
+                const newUser = <span class="cstat-no" title="statement not covered" >await user.populate("designation").execPopulate()</span>
+<span class="cstat-no" title="statement not covered" >                res.json(newUser)</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                next(new DesignationNotFoundException(designation))</span>
+            }
+            
+        } catch (error) {
+<span class="cstat-no" title="statement not covered" >            res.status(500).json(error)</span>
+        }
     }
 &nbsp;
     /**
@@ -184,7 +217,7 @@ export default UserController</pre></td></tr>
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Tue May 07 2019 09:41:53 GMT+0545 (Nepal Time)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Tue May 07 2019 15:02:38 GMT+0545 (Nepal Time)
 </div>
 </div>
 <script src="..\..\..\..\prettify.js"></script>

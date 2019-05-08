@@ -4,8 +4,8 @@ Should be consider
 Components: 
 	- User (members)
 	- Project
-	- Comment
-	- Feedback - Emoji
+	- Project Update
+	- Project Status
 
 Features:
 	- Login
@@ -15,7 +15,6 @@ Features:
 	- Filters (by months: list of months)
 	- Project Update Detail Page
 	- Project Team Member Detail ( Project Manager, Developer, Designer, QA, Dev Ops)could be Others
-	- Comment : TextBox
 
 ----------------
 DataBase Schema:
@@ -24,14 +23,24 @@ DataBase Schema:
 		- id
 		- fullname
 		- email
-		- images
+		- image
 		- password
 		- role (admin, project manager, clients)
 		- designation (Relation: Degination)
+		- passwordResetToken
+    	- passwordResetExpires
+    	- token
+        	- accessToken
+        	- refreshToken
+        	- expiresAt: Date
 
 	- Designation
 		- id
 		- title	
+
+	- Project Types
+		- id
+		- title
 
 	- Project:
 		- id
@@ -39,36 +48,26 @@ DataBase Schema:
 		- logo
 		- description (text)
 		- members ( Relations: User)
-		- owner (Relations: User)
+		- owners (Relations: User)
 		- project_type (Relation: Project Types)
-		- created_at (datetime)
+		- timestamps (datetime)
+		- endDate
+		- detail : text (link, credential: email, password, project addinational information)
 
 	- Project Update:
-		- id	
+		- id
 		- description
-		- meta (link, credential: email, password, etc)
 		- remark ( eg: release or any info message)
-		- created_at (datetime)
-
-	- Project Types
-		- id
-		- title
-	
-	- Comment:
-		- id
-		- text
 		- project (Relation: Project)
-		- user (Relation: User)
+		- timestamps (datetime)
 	
-	- Feedback
+	- Project Status
 		- id
-		- symbol (emoji)
-		- project (Relation: project)
-		- user (Relation: User)
 	
 	- Notifications
 		- id
 		- message
-		- user (client) : Relation (User)
+		- to (client) : Relation (User)
+		- read: boolean
 
 

@@ -1,4 +1,5 @@
 import express from "express"
+import expressValidator from "express-validator"
 import compression from "compression"
 import bodyParser from "body-parser"
 import lusca from "lusca"
@@ -8,7 +9,6 @@ import mongoose from "mongoose"
 import config from "./config"
 import Routes from "./routes/v1"
 import errorMiddleware from "./middleware/error.middleware"
-import Seeder from "./services/database/seeder"
 
 class App {
 
@@ -39,19 +39,11 @@ class App {
         const connection = mongoose.connect(connectionUrl, {
             useNewUrlParser: true
         })
-        .then(() => { 
-            
-            /**
-             * Run Seeder
-             */
-            if (config.seed)
-                new Seeder()
-
-        })
+        .then(() => { })
         .catch(err => {
             console.log(`MongoDB connection error. Please make sure MongoDB is running ${err}`)
         })
-        
+
         mongoose.set('useCreateIndex', true)
     }
 
@@ -65,6 +57,7 @@ class App {
         this.app.use(bodyParser.urlencoded({ extended: true }))
         this.app.use(lusca.xframe("SAMEORIGIN"))
         this.app.use(lusca.xssProtection(true))
+        this.app.use(expressValidator())
         this.app.use(cors())
     }
     

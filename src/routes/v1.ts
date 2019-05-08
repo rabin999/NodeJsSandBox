@@ -15,7 +15,7 @@ class BaseRoutes {
     private initializeBaseRoutes() 
     {
         this.route.get("/", (req: Request, res: Response) => {
-            res.send('welcome to API')
+            res.send("welcome to API")
         })
 
         this._route.use("/users", new userRoutes().route)

@@ -9,9 +9,6 @@ const projectUpdateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    meta: [{
-        type: String
-    }],
     remark:{
         type: String
     },

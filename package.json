@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "npm run serve",
-    "seed": "hello",
+    "seed": "concurrently -k \"npm run build-ts\" \"node dist/services/database/seeder.js\"",
     "serve": "node dist/server.js",
     "watch-node": "nodemon dist/server.js",
     "test": "jest --colors --forceExit --coverage --verbose",
@@ -28,6 +28,8 @@
     "express-validator": "^5.3.1",
     "lusca": "^1.6.1",
     "mongoose": "^5.5.5",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "typescript": "^3.4.5"
   },
   "devDependencies": {
@@ -40,6 +42,8 @@
     "@types/jest": "^24.0.12",
     "@types/lusca": "^1.5.0",
     "@types/mongoose": "^5.3.27",
+    "@types/passport": "^1.0.0",
+    "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.7",
     "chai": "^4.2.0",
     "concurrently": "^4.1.0",

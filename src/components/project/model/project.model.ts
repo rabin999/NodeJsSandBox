@@ -16,16 +16,18 @@ const projectSchema = new mongoose.Schema({
         ref: "user",
         required: true
     }],
-    owner: {
+    owner: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true
-    },
+    }],
     projectType: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "projectType",
         required: true
     },
+    endData: Date,
+    detail: String
 }, { 
     timestamps: true
 })
