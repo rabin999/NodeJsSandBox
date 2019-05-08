@@ -4,10 +4,15 @@ class UserEmailAlreadyExistsException extends HttpException {
     
     /**
      * @param  {string} email
+     * @param  {any={}} options
      */
-    constructor (email: string) 
+    constructor (email: string, options: any = {}) 
     {
-        super(400, `User with email ${email} already exists`)
+        super({
+            status: 400,
+            title: "User already exists",
+            message: `User with email ${email} already exists`
+        }, options)
     }
 }
 

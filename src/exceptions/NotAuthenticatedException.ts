@@ -3,7 +3,10 @@ import HttpException from "./HttpException"
 class NotAuthenticatedException extends HttpException {
     constructor ()
     {
-        super(401, "You are not authorized")
+        super({
+            status: 401,
+            message: "You are not authorized"
+        })
     }
 }
 

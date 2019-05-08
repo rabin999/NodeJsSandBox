@@ -1,17 +1,26 @@
-class HttpException extends Error {
-    public status: number
-    public message: string
-    
-    /**
-     * @param  {number} status
-     * @param  {string} message
-     */
-    constructor (status: number, message: string) 
-    {
-        super(message)
+import ExceptionParser from "../services/parser/ExceptionParser"
+import  { HttpExceptionInterface, ParamsInterface } from "../interfaces/HttpException.interface"
 
-        this.status = status
-        this.message = message
+class HttpException extends Error implements HttpExceptionInterface {
+
+    public params: any
+    public options: any
+
+    /**
+     * @param  {object} params
+     * @param  {object={}} options
+     */
+    constructor (params: ParamsInterface, options: any = {})
+    {   
+        super(params.message)
+        this.params = params
+        this.options = options
+    }
+
+    // return type should be array
+    public parse()
+    {
+        return new ExceptionParser(this.params).parse()
     }
 }
 

@@ -7,7 +7,10 @@ class ProjectNotFoundException extends HttpException {
      */
     constructor (id: string)
     {
-        super(404, `Project with id ${id} not found`)
+        super({
+            status: 404,
+            message: `Project with id ${id} not found`
+        })
     }
 }
 

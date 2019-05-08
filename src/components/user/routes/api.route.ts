@@ -10,8 +10,9 @@ class UserRoutes {
     {
         this._route = Router()
 
-        this._route.post("/signup", SignUpRequest, new UserController().singUp)
-        this._route.get("/", new UserController().allUser)
+        this._route.post("/signup", SignUpRequest, new UserController().create)
+        this._route.put("/:id/update", new UserController().update)
+        this._route.delete("/:id/delete", new UserController().delete)
     }
 
     get route()

@@ -2,7 +2,10 @@ import HttpException from './HttpException';
 
 class AuthenticationTokenMissingException extends HttpException {
   constructor() {
-    super(401, "Authentication token missing")
+    super({
+      status: 401,
+      message: "Authentication token missing"
+    })
   }
 }
 

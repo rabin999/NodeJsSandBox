@@ -7,7 +7,10 @@ class UserNotFoundException extends HttpException {
      */
     constructor (id: string)
     {
-        super(404, `User with id ${id} not found`)
+        super({
+            status: 404,
+            message: `User with id ${id} not found`
+        })
     }
 }
 

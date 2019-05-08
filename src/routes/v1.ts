@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express"
-import userRoutes from "../components/user/routes/user.route"
+import userRoutes from "../components/user/routes/api.route"
 import ProjectRoutes from "../components/project/routes/project.route"
 
 class BaseRoutes {

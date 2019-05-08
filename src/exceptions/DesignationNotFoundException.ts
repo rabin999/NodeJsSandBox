@@ -7,7 +7,10 @@ class DesignationNotFoundException extends HttpException {
      */
     constructor (id: string)
     {
-        super(404, `Designation with id ${id} not found`)
+        super({
+            status: 404,
+            message: `Designation with id ${id} not found`
+        })
     }
 }
 
