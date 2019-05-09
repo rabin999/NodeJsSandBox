@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt-nodejs"
 import mongoose from "mongoose"
+import Project from "../../project/model/project.model"
 
 const userSchema = new mongoose.Schema({
     fullname: {
@@ -40,6 +41,12 @@ const userSchema = new mongoose.Schema({
 })
 
 /**
+ * --------------
+ * HOOKS
+ * --------------
+ */
+
+/**
  * Password hash middleware.
  */
 userSchema.pre("save", function save(next) {
@@ -56,13 +63,38 @@ userSchema.pre("save", function save(next) {
 })
 
 /**
+ * Remove all associated relational IDs
+ */
+userSchema.post("remove", user => {
+    const userId = user._id;
+    Project.find({ members: { $in: [ mongoose.Types.ObjectId(userId) ] } }).then(projects => {
+        projects.map(project =>
+            Project.findOneAndUpdate(
+                project._id,
+                { $pull: { members: userId } },
+                { new: true }
+            )
+        )
+    })
+
+    Project.find({ owners: { $in: [ mongoose.Types.ObjectId(userId) ] } }).then(projects => {
+        projects.map(project =>
+            Project.findOneAndUpdate(
+                project._id,
+                { $pull: { owners: userId } },
+                { new: true }
+            )
+        )
+    })
+})
+
+/**
  * Compare password function type
  * 
  * @param  {string} plainPassword
  * @param  {(err:any,isMatch:any)=>{}} cb
  */
 type comparePasswordFunction = (plainPassword: string, cb: (err: any, isMatch: any) => {}) => void
-
 
 /**
  * Compare password

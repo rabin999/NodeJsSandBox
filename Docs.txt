@@ -67,7 +67,8 @@ DataBase Schema:
 		- id
 		- rate
 		- rate_time
-		- members
+		- members (Relation : User)
+		- project update (Relation : Project Update)
 	
 	- Notifications
 		- id
