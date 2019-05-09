@@ -45,6 +45,7 @@ class App {
         })
 
         mongoose.set('useCreateIndex', true)
+        mongoose.set('useFindAndModify', false)
     }
 
     /**

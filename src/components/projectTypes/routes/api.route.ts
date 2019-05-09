@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express"
 import ProjectTypeController from "../controllers/projectType.controller"
 import ProjectCreateRequest from "../request/projectType.request"
 
-class UserRoutes {
+class ProjecTypeRoute {
 
     public _route: any
     
@@ -21,4 +21,4 @@ class UserRoutes {
     }
 }
 
-export default UserRoutes
+export default ProjecTypeRoute

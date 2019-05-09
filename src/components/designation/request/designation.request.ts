@@ -5,17 +5,8 @@ import HttpException from "../../../exceptions/HttpException"
 const validation = async (req: Request, res: Response, next: NextFunction) => {
     
     // Project title
-    req.assert("title").notEmpty().withMessage("Project title is required")
-        .isLength({ min: 2 }).withMessage("Project title must be 2 characters")
-
-    // Project Members
-    req.assert("members").notEmpty().withMessage("Project members are required")
-
-    // Project Owner
-    req.assert("owners").notEmpty().withMessage("Project owners are required")
-
-    // Project Type
-    req.assert("projectType").notEmpty().withMessage("Project type is required")
+    req.assert("title").notEmpty().withMessage("Designation title is required")
+        .isLength({ min: 5 }).withMessage("Designation title must be 5 characters")
 
     // process errors
     const errors = req.validationErrors()

@@ -25,10 +25,7 @@ const projectSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "projectType",
     },
-    endDate: {
-        type: Date,
-        required: true
-    },
+    endDate: Date,
     detail: String
 }, { 
     timestamps: true

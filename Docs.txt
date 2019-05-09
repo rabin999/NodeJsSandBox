@@ -2,8 +2,10 @@ Should be consider
 	- key must be camelCase
 
 Components: 
-	- User (members)
-	- Project
+	- User (members) - In progress
+	- project Types - done
+	- designations -  done
+	- Project - done
 	- Project Update
 	- Project Status
 

@@ -12,8 +12,12 @@ class ProjectRoutes {
 
         this._route.get("/", new ProjectController().projects)
         this._route.post("/create", ProjectCreateRequest, new ProjectController().create)
-        this._route.put("/:id/update", new ProjectController().update)
+        this._route.put("/:id/update", ProjectCreateRequest, new ProjectController().update)
         this._route.delete("/:id/delete", new ProjectController().delete)
+        this._route.put("/:id/add-members", new ProjectController().addMembers)
+        this._route.put("/:id/remove-members", new ProjectController().removeMembers)
+        this._route.put("/:id/add-owners", new ProjectController().addOwners)
+        this._route.put("/:id/remove-owners", new ProjectController().removeOwners)
     }
 
     get route()

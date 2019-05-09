@@ -1,18 +1,20 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectTypeNotFoundException from "../../../exceptions/ProjectTypeNotFoundException"
-import ProjectType from "../model/projectType.model"
+import Designation from "../model/designation.model"
 
-class ProjectController {
+class DesignationController {
 
     /**
-     * GET /project-types
-     * Get all project types
+     * GET /designations
+     * Get all designation
      */
-    allProjectTypes = async (req: Request, res: Response, next: NextFunction) => {
+    allDesignations = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const allProjectTypes = await ProjectType.find({}).select("-__v").exec()
-            return res.json(allProjectTypes)
+
+            const designations = await Designation.find({}).select("-__v").exec()
+            return res.json(designations)
+
         } 
         catch (error) {
             const err = new HttpException({
@@ -24,8 +26,8 @@ class ProjectController {
     }
 
     /**
-     * POST /project-types/create
-     * Create a new project type
+     * POST /designations/create
+     * Create a new designation
      * 
      * @param  {Request} req
      * @param  {Response} res
@@ -34,11 +36,11 @@ class ProjectController {
     public create = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const newProjectType = await ProjectType.create({
+            const newDesignation = await Designation.create({
                 title: req.body.title
             })
             return res.status(201).json({
-                message: `Project type ${newProjectType.title} created successfully.`
+                message: `Designation ${newDesignation.title} created successfully.`
             })
         } 
         catch (error) {
@@ -51,7 +53,6 @@ class ProjectController {
     }
 
     /**
-     * DELETE project-types/id/delete
      * Delete project type
      * 
      * @param  {Request} req
@@ -61,14 +62,14 @@ class ProjectController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const deletedProjectType = await ProjectType.findByIdAndDelete(req.params.id).exec()
+            const deletedDesignation = await Designation.findByIdAndDelete({ _id: req.params.id }).exec()
 
-            if (!deletedProjectType) {
+            if (!deletedDesignation) {
                 throw new Error("Problem with deleting project !")
-            } 
+            }
 
-            res.json({
-                message: `Project Type ${deletedProjectType.title} deleted successfully.`
+            return res.json({ 
+                message: `Designation id ${req.params.id} deleted successfully` 
             })
         } 
         catch (error) {
@@ -81,4 +82,4 @@ class ProjectController {
     }
 }
 
-export default ProjectController
+export default DesignationController
