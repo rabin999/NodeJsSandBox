@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectNotFound from "../../../exceptions/ProjectNotFoundException"
 import Project from "../model/project.model"
+import mongoose, { mongo } from "mongoose"
 
 class ProjectController {
     
@@ -138,20 +139,26 @@ class ProjectController {
      */
     public addMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const membersId = typeof req.body.members === "string" ? [req.body.members] : req.body.members
+            const ids = req.body.members
 
+            let membersId = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] : 
+                                Array.from(req.body.members).map(id => mongoose.Types.ObjectId(id))
+            
             if (!membersId) {
                 throw new Error("Member shouldn't be empty.")
             }
-            
-            const updateProject = await Project.findOneAndUpdate(req.params.id, 
+
+            const updateProject = await Project.findOneAndUpdate({ _id: mongoose.Types.ObjectId(req.params.id), members: { $nin: membersId } }, 
                 { $push:  { members: { $each: membersId } } },
                 { upsert: true }
                 ).exec()
 
-
             if (!updateProject) {
-                throw new Error("Problem with updating project !")
+                throw new HttpException({
+                    status: 500,
+                    title: "Error occured while updating project",
+                    message: "Project not found or project members are already assigned to this project."
+                })
             }
 
             res.status(201).json({
@@ -208,17 +215,20 @@ class ProjectController {
 
     public addOwners = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const ownersId = typeof req.body.owners === "string" ? [req.body.owners] : req.body.owners
 
-            if (!ownersId) {
-                throw new Error("Owners id shouldn't be empty.")
-            }
+            const ids = req.body.owners
+
+            let ownersId = typeof ids === "string" ? [mongoose.Types.ObjectId(ids)] : 
+                                Array.from(ids).map(id => mongoose.Types.ObjectId(id))
             
-            const updateProject = await Project.findOneAndUpdate(req.params.id, 
-                { $push:  { members: { $each: ownersId } } },
+            if (!ownersId) {
+                throw new Error("Member shouldn't be empty.")
+            }
+
+            const updateProject = await Project.findOneAndUpdate({ _id: mongoose.Types.ObjectId(req.params.id), owners: { $nin: ownersId } }, 
+                { $push:  { owners: { $each: ownersId } } },
                 { upsert: true }
                 ).exec()
-
 
             if (!updateProject) {
                 throw new Error("Problem with updating project !")
@@ -246,7 +256,7 @@ class ProjectController {
             }
             
             const updateProject = await Project.findOneAndUpdate(req.params.id, 
-                { $pull:  { members: { $in: ownersId } } },
+                { $pull:  { owners: { $in: ownersId } } },
                 { upsert: true }
                 ).exec()
 
@@ -256,7 +266,7 @@ class ProjectController {
             }
 
             res.status(201).json({
-                message: `Owners ${ownersId} added to Project ${updateProject.title} successfully.`
+                message: `Owners ${ownersId} removed from Project ${updateProject.title} successfully.`
             })
         } 
         catch (error) {

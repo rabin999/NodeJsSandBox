@@ -16,7 +16,12 @@ const projectUpdateSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "project",
         required: true
-    }
+    },
+    pushedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+    },
 }, { 
     timestamps: true
 })

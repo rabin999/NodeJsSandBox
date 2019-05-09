@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
-import ProjectTypeNotFoundException from "../../../exceptions/ProjectTypeNotFoundException"
 import Designation from "../model/designation.model"
 
 class DesignationController {
@@ -53,7 +52,8 @@ class DesignationController {
     }
 
     /**
-     * Delete project type
+     * DELETE designations/id/delete
+     * Delete Designation
      * 
      * @param  {Request} req
      * @param  {Response} res

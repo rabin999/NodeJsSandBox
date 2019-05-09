@@ -63,8 +63,11 @@ DataBase Schema:
 		- project (Relation: Project)
 		- timestamps (datetime)
 	
-	- Project Status
+	- Project Update Status
 		- id
+		- rate
+		- rate_time
+		- members
 	
 	- Notifications
 		- id
