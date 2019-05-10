@@ -4,6 +4,7 @@ import Designation from "../../designation/model/designation.model"
 import DesignationNotFoundException from "../../../exceptions/DesignationNotFoundException"
 import HttpException from "../../../exceptions/HttpException"
 import UserNotFoundException from "../../../exceptions/UserNotFoundException"
+import config from "../../../config"
 
 class UserController {
 
@@ -23,13 +24,21 @@ class UserController {
         try {
             const selectedDesingation = await Designation.findById(designation)
 
+            let CurrentDate = new Date()
+            CurrentDate.setMonth(CurrentDate.getMonth() + config.passport.token.expiresAt)
+
             if (selectedDesingation != null) {
                 const user = await User.create({
                     fullname,
                     email,
                     password,
                     role,
-                    designation: selectedDesingation.id
+                    designation: selectedDesingation.id,
+                    token: {
+                        accessToken: "c9d00552-a20f-472a-9a90-9d88265a3fb5",
+                        refreshToken: "175bd640-2d27-44c9-a411-2f5b5e600a29",
+                        expiresAt: CurrentDate
+                    }
                 })
                 
                 const newUser = await user.populate("designation").execPopulate()

@@ -64,7 +64,8 @@ class ProjectController {
             const deletedProjectType = await ProjectType.findByIdAndDelete(req.params.id).exec()
 
             if (!deletedProjectType) {
-                throw new Error("Problem with deleting project !")
+                const err = new ProjectTypeNotFoundException(req.params.id)
+                res.status(404).json(err.parse())
             } 
 
             res.json({

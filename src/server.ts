@@ -2,7 +2,6 @@ import App from "./app"
 import config from "./config"
 import * as https from "https"
 import fs from "fs"
-import express from "express"
 
 class Server {
 
@@ -24,16 +23,17 @@ class Server {
              * https connection
             */
             https.createServer({
-                key: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/privkey.pem"),
-                cert: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/cert.pem"),
-                ca: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/chain.pem"),
+                key: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/privkey.pem", "utf-8"),
+                cert: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/cert.pem", "utf-8"),
+                ca: fs.readFileSync("/etc/letsencrypt/live/yourdomain.com/chain.pem", "utf-8"),
               }, this.app)
               .listen(config.port)
         } 
         else {
             const server = this.app.listen(config.port, () => {
                 console.log(
-                    "App is running at http://localhost:%d in %s mode",
+                    "App is running at %s:%d in %s mode",
+                    config.app_host,
                     config.port,
                     config.env
                 )

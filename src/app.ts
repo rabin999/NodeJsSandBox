@@ -1,5 +1,8 @@
 import express from "express"
 import expressValidator from "express-validator"
+import session from "express-session"
+import uuid from "uuid/v4"
+import passport from "passport"
 import compression from "compression"
 import bodyParser from "body-parser"
 import lusca from "lusca"
@@ -9,6 +12,7 @@ import mongoose from "mongoose"
 import config from "./config"
 import Routes from "./routes/v1"
 import errorMiddleware from "./middleware/error.middleware"
+import PassportManager from "./services/authentication/passport.password"
 
 class App {
 
@@ -60,12 +64,28 @@ class App {
         this.app.use(lusca.xssProtection(true))
         this.app.use(expressValidator())
         this.app.use(cors())
-    }
+        this.app.use(session({
+            genid: (req) => {
+                return uuid()
+            },
+            resave: true,
+            saveUninitialized: true,
+            secret: config.session_secret
+        }))
+
+        // Setup Passport
+        this.app.use(passport.initialize())
+        this.app.use(passport.session())
+
+        // Initialize bearer strategy
+        new PassportManager().bearer()
+    }   
     
     private initializeErrorHandling()
     {
         this.app.use(errorMiddleware)
     }
+    
     /**
      * Routes
      */

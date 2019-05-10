@@ -1,5 +1,5 @@
 import { Router } from "express"
-import ProjectController, * as projectController from "../controllers/projectStatus.controller"
+import ProjectStatuController from "../controllers/projectStatus.controller"
 
 class ProjectStatusRoutes {
 
@@ -9,7 +9,7 @@ class ProjectStatusRoutes {
     {
         this._route = Router()
 
-        this._route.get("/", new ProjectController().projects)
+        this._route.get("/", new ProjectStatuController().projectStatus)
     }
 
     get route()

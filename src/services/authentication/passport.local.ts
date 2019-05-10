@@ -6,7 +6,6 @@ import NotAuthenticatedException from "../../exceptions/NotAuthenticatedExceptio
 
 const LocalStrategy = passportLocal.Strategy
 
-
 passport.serializeUser<any, any>((user, done) => {
     done(undefined, user.id)
 })

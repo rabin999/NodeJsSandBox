@@ -6,7 +6,7 @@ class ProjectStatusController {
      * GET /projects
      * Create a new member account
      */
-    projects = (req: Request, res: Response, next: NextFunction) => {
+    projectStatus = (req: Request, res: Response, next: NextFunction) => {
         res.send("you are in project page")
     }
 }

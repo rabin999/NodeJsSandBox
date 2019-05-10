@@ -1,10 +1,21 @@
+import dotenv from "dotenv"
+import path from "path"
+
+/**
+ * DOTENV configutation
+ */
+dotenv.config({ path: path.resolve(".env") })
+
 const config = {
-    
+
+    // APPLICATION HOST
+    app_host : process.env.HOST || "https://example.com",
+
     // APPLICATION NAME
-    app_name: "Client APP",
+    app_name: process.env.APP_NAME || "Fuse BulLetin",
 
     // PORT
-    port: 3000,
+    port: process.env.PORT || 3000,
 
     /**
      * ENVIRONMENT
@@ -12,15 +23,29 @@ const config = {
      * development -    help to debug and maintain
      * production -     for deployment
      */
-    env : "development",
+    env : process.env.ENV || "development",
 
     // DATABASE CONFIG
     database : {
-        name: "client_app",
-        host: "localhost",
-        port: "27017",
-        usename: "",
-        password: "",
+        name:  process.env.DATABASE_NAME || "client_app",
+        host: process.env.DATABASE_HOST || "localhost",
+        port: process.env.DATABASE_PORT || 27017,
+        usename: process.env.DATABASE_USER || "",
+        password: process.env.DATABASE_NAME || "",
+    },
+
+    session_secret : process.env.SESSION_SECRET,
+    client_secret : process.env.CLIENT_SECRET,
+
+    /**
+     * PASSPORT CONFIGURATION
+     * TOKEN
+     * - expiresAt in 12 months
+     */
+    passport: {
+        token: {
+            expiresAt: 12
+        }
     }
 }
 
