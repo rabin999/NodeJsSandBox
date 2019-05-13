@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express"
 import ProjectTypeController from "../controllers/projectType.controller"
 import ProjectCreateRequest from "../request/projectType.request"
+import RoleMiddleware from "../../../middleware/role.middleware"
 
 class ProjecTypeRoute {
 
@@ -11,8 +12,8 @@ class ProjecTypeRoute {
         this._route = Router()
         
         this._route.get("/", new ProjectTypeController().allProjectTypes)
-        this._route.post("/create", ProjectCreateRequest, new ProjectTypeController().create)
-        this._route.delete("/:id/delete", new ProjectTypeController().delete)
+        this._route.post("/create", RoleMiddleware(["admin"]), ProjectCreateRequest, new ProjectTypeController().create)
+        this._route.delete("/:id/delete", RoleMiddleware(["admin"]), new ProjectTypeController().delete)
     }
 
     get route()

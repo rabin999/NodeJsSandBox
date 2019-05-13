@@ -3,7 +3,8 @@ import HttpException from "../../../exceptions/HttpException"
 import ProjectNotFound from "../../../exceptions/ProjectNotFoundException"
 import Unauthorized from "../../../exceptions/NotAuthorizedException"
 import Project from "../model/project.model"
-import mongoose, { mongo } from "mongoose"
+// import mongoose, { mongo } from "mongoose"
+import mongoose from "mongoose"
 
 class ProjectController {
 

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import ProjectUpdateStatusController from "../controllers/projectUpdateStatus.controller"
-import ProjectUpdateStatus from "../request/projectStatus.request" 
+import ProjectUpdateStatus from "../request/projectStatus.request"
 
 class ProjectStatusRoutes {
 
