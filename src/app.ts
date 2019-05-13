@@ -12,7 +12,8 @@ import mongoose from "mongoose"
 import config from "./config"
 import Routes from "./routes/v1"
 import errorMiddleware from "./middleware/error.middleware"
-import PassportManager from "./services/authentication/passport.password"
+import "./services/authentication/passport.password"
+import GenerateAccessToken from "./services/authentication/passport.geneateToken"
 
 class App {
 
@@ -76,9 +77,6 @@ class App {
         // Setup Passport
         this.app.use(passport.initialize())
         this.app.use(passport.session())
-
-        // Initialize bearer strategy
-        new PassportManager().bearer()
     }   
     
     private initializeErrorHandling()
@@ -91,6 +89,7 @@ class App {
      */
     private initializeRoutes() 
     {
+        this.app.post("/oauth/access-token", GenerateAccessToken)
         this.app.use("/api/v1", this.routes)
     }
 }

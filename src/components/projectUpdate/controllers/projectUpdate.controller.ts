@@ -16,7 +16,7 @@ class ProjectUpdateController {
      */
     public projectUpdates = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updates = await ProjectUpdate.find({ project: mongoose.Types.ObjectId(req.params.projectId ) }).select("-__v").exec()
+            const updates = await ProjectUpdate.find({ project: mongoose.Types.ObjectId(req.params.projectId ) }).select("-__v").lean().exec()
             return res.json(updates)
         }
         catch (error) {
@@ -62,6 +62,39 @@ class ProjectUpdateController {
     }
 
     /**
+     * POST /project-update/id/seen/true
+     * Change project update seen status
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public updateSeen = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            const updated = await ProjectUpdate.findByIdAndUpdate( req.params.id, {
+                seen: true
+            })
+
+            if (!updated) {
+                const err = new ProjectUpdateNotFound(req.params.id)
+                return res.status(404).json(err.parse())
+            }
+
+            return res.json({
+                message: `Project Update ${updated.title} seen status changed successfully.`
+            })
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+    
+    /**
      * PUT /project-update/id/update
      * Update projectUpdate
      * 
@@ -71,7 +104,7 @@ class ProjectUpdateController {
      */
     public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            
+
             const { title, description, remark, project, pushedBy } = req.body
             const updated = await ProjectUpdate.findByIdAndUpdate( req.params.id, {
                 title,
@@ -98,7 +131,7 @@ class ProjectUpdateController {
             res.status(500).json(err.parse())
         }
     }
-    
+
     /**
      * DELETE /project-updates/id/delete
      * Delete project update

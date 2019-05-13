@@ -12,6 +12,11 @@ const projectUpdateSchema = new mongoose.Schema({
     remark:{
         type: String
     },
+    seen: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     project: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "project",
@@ -32,6 +37,10 @@ const projectUpdateSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
             required: true
+        },
+        ratedAt : {
+            type: Date,
+            default: Date.now
         }
     }]
 }, { 

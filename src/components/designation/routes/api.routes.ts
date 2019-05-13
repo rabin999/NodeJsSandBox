@@ -17,7 +17,7 @@ class DesignationRoutes {
 
     get route()
     {
-        return this._route;
+        return this._route
     }
 }
 

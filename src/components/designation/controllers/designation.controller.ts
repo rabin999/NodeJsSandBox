@@ -11,7 +11,7 @@ class DesignationController {
     allDesignations = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const designations = await Designation.find({}).select("-__v").exec()
+            const designations = await Designation.find({}).select("-__v").lean().exec()
             return res.json(designations)
 
         } 
@@ -62,7 +62,7 @@ class DesignationController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const deletedDesignation = await Designation.findByIdAndDelete({ _id: req.params.id }).exec()
+            const deletedDesignation = await Designation.findByIdAndDelete({ _id: req.params.id }).lean().exec()
 
             if (!deletedDesignation) {
                 throw new Error("Problem with deleting project !")

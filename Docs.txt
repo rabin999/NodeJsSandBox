@@ -77,3 +77,8 @@ DataBase Schema:
 		- read: boolean
 
 
+Query Optimization:
+--------------------
+- https://docs.mongodb.com/manual/tutorial/optimize-query-performance-with-indexes-and-projections
+	
+- use .lean() when you don't have to do any opertation with mongooes object, it will fetch json without building any mongooes object

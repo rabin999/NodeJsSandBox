@@ -12,6 +12,7 @@ class ProjectUpdateRoutes {
 
         this._route.get("/:projectId", new ProjectUpdateController().projectUpdates)
         this._route.post("/create", ProjectUpdateRequest, new ProjectUpdateController().create)
+        this._route.post("/:id/seen/true", new ProjectUpdateController().updateSeen)
         this._route.put("/:id/update", ProjectUpdateRequest, new ProjectUpdateController().update)
         this._route.delete("/:id/delete", new ProjectUpdateController().delete)
     }

@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
     token: {
         accessToken: String,
         refreshToken: String,
-        expiresAt: Date
+        expiresAt: Date,
+        scopes: Array
     },
     role: {
         type: String,

@@ -16,7 +16,7 @@ class Server {
     /**
      * Start Express server
      */
-    private listen() 
+    private listen(): void
     {
         if (config.env === "production") {
             /**

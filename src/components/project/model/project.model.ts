@@ -31,4 +31,11 @@ const projectSchema = new mongoose.Schema({
     timestamps: true
 })
 
+projectSchema.virtual("countMembers", {
+    ref: "user",
+    localField: "members",
+    foreignField: "_id",
+    count: true
+})
+
 export default mongoose.model("project", projectSchema)

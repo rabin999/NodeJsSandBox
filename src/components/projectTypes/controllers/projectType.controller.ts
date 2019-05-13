@@ -11,7 +11,7 @@ class ProjectController {
      */
     allProjectTypes = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const allProjectTypes = await ProjectType.find({}).select("-__v").exec()
+            const allProjectTypes = await ProjectType.find({}).select("-__v").lean().exec()
             return res.json(allProjectTypes)
         } 
         catch (error) {

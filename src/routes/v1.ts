@@ -5,6 +5,7 @@ import ProjectTypeRoutes from "../components/projectTypes/routes/api.route"
 import ProjectRoutes from "../components/project/routes/api.route"
 import ProjectUpdateRoutes from "../components/projectUpdate/routes/api.route"
 import ProjectStatusRoutes from "../components/projectStatus/routes/api.route"
+import passport from "passport"
 
 class BaseRoutes {
 
@@ -22,6 +23,9 @@ class BaseRoutes {
             res.send("welcome to API")
         })
 
+        // Check authorization
+        this._route.use(passport.authenticate('bearer', { session: false }))
+        
         this._route.use("/users", new userRoutes().route)
         this._route.use("/designations", new DesignationRoutes().route)
         this._route.use("/project-types", new ProjectTypeRoutes().route)

@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/express-session": "^1.15.12",
+    "@types/oauth2orize": "^1.8.5",
     "@types/passport-http": "^0.3.8",
     "@types/passport-http-bearer": "^1.0.33",
     "@types/passport-oauth2-client-password": "^0.1.2",
@@ -34,7 +35,9 @@
     "express-session": "^1.16.1",
     "express-validator": "^5.3.1",
     "lusca": "^1.6.1",
+    "moment": "^2.24.0",
     "mongoose": "^5.5.5",
+    "oauth2orize": "^1.11.0",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",

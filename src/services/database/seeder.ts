@@ -3,6 +3,10 @@ import mongoose from "mongoose"
 import config from "../../config"
 import Designation from "../../components/designation/model/designation.model"
 import ProjectType from "../../components/projectTypes/model/projectType.model"
+import User from "../../components/user/model/user.model"
+import Project from "../../components/project/model/project.model"
+
+mongoose.plugin(require("@lykmapipo/mongoose-faker"))
 
 class Seeder {
     constructor () {
@@ -37,13 +41,13 @@ class Seeder {
     /**
      * All Seeder registered here
      */
-    private seed() 
+    private seed(): void
     {
         this.designationSeeder()
         this.projectTypeSeeder()
     }
 
-    private designationSeeder () 
+    private designationSeeder () : void
     {
         Designation.insertMany([
             {
@@ -73,7 +77,7 @@ class Seeder {
         ])
     }
 
-    private projectTypeSeeder () 
+    private projectTypeSeeder () : void
     {
         ProjectType.insertMany([
             {

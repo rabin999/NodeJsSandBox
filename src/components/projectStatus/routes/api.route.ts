@@ -1,5 +1,6 @@
 import { Router } from "express"
-import ProjectStatuController from "../controllers/projectStatus.controller"
+import ProjectUpdateStatusController from "../controllers/projectUpdateStatus.controller"
+import ProjectUpdateStatus from "../request/projectStatus.request" 
 
 class ProjectStatusRoutes {
 
@@ -9,7 +10,9 @@ class ProjectStatusRoutes {
     {
         this._route = Router()
 
-        this._route.get("/", new ProjectStatuController().projectStatus)
+        this._route.get("/:projectUpdateId", new ProjectUpdateStatusController().projectUpdateStatus)
+        this._route.post("/:projectUpdateId/create", ProjectUpdateStatus, new ProjectUpdateStatusController().create)
+        this._route.delete("/:id/delete", new ProjectUpdateStatusController().delete)
     }
 
     get route()

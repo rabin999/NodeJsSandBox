@@ -12,10 +12,14 @@ const config = {
     app_host : process.env.HOST || "https://example.com",
 
     // APPLICATION NAME
-    app_name: process.env.APP_NAME || "Fuse BulLetin",
+    app_name: process.env.APP_NAME || "Fuse Bulletin",
 
     // PORT
     port: process.env.PORT || 3000,
+
+    // DATE AND TIME
+    timezone: 'Asia/Kathmandu',
+    tokenExipiresAt: '12',
 
     /**
      * ENVIRONMENT

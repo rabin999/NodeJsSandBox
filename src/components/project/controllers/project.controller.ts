@@ -12,7 +12,11 @@ class ProjectController {
      */
     projects = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const allProjects = await Project.find({}).populate("projectType").populate("owners").populate("members").select("-__v").exec()
+            const allProjects = await Project.find({})
+                                        .populate("projectType", "title")
+                                        .populate("countMembers")
+                                        .select("-__v -owners").lean().exec()
+
             return res.json(allProjects)
         }
         catch (error) {
@@ -147,7 +151,7 @@ class ProjectController {
             }
 
             let membersId = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] :
-                Array.from(req.body.members).map(id => mongoose.Types.ObjectId(id))
+                                    Array.from(req.body.members).map(id => mongoose.Types.ObjectId(id))
 
             const updateProject = await Project.findOneAndUpdate({ _id: mongoose.Types.ObjectId(req.params.id), members: { $nin: membersId } },
                 { $push: { members: { $each: membersId } } },
