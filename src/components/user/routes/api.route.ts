@@ -11,6 +11,7 @@ class UserRoutes {
         this._route = Router()
 
         this._route.post("/signup", SignUpRequest, new UserController().create)
+        this._route.post("/:id/uploadProfile", new UserController().uploadProfile)
         this._route.put("/:id/update", new UserController().update)
         this._route.delete("/:id/delete", new UserController().delete)
     }

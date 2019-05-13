@@ -16,7 +16,7 @@ import "./services/authentication/passport.password"
 import GenerateAccessToken from "./services/authentication/passport.geneateToken"
 
 class App {
-
+    
     public app: express.Application
     public routes: any
 

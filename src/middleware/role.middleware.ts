@@ -1,32 +1,16 @@
 import { NextFunction, Request, Response } from "express"
 import HttpException from "../exceptions/HttpException"
+import Unauthorized from "../exceptions/NotAuthorizedException"
 
-function roleMiddleware(error: HttpException, request: Request, response: Response, next: NextFunction) {
-
-    /**
-     * Parse JSON Syntax error
-     */
-    if (error instanceof SyntaxError) {
-
-      const status = 500
-      const message = error.message
-
-      response.status(status).send(new HttpException({
-        status,
-        message
-      }).parse())
-
-    } else {
-
-      const status = error.params.status || 500
-      const message = error.message || "Something went wrong"
-
-      response.status(status).send({
-          message,
-          status,
-      })
-
+const roleMiddleware = (roles: Array<String>, options: object = {}) => {
+    return (request: Request, response: Response, next: NextFunction) {
+        if (request.user.role === "admin" || roles.includes(request.user.role)) {
+            next()
+        }
+        else {
+            return response.status(403).send(new Unauthorized().parse())
+        }
     }
-  }
+}
   
-  export default roleMiddleware
+export default roleMiddleware

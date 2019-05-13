@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectNotFound from "../../../exceptions/ProjectNotFoundException"
+import Unauthorized from "../../../exceptions/NotAuthorizedException"
 import Project from "../model/project.model"
 import mongoose, { mongo } from "mongoose"
 
@@ -9,10 +10,22 @@ class ProjectController {
     /**
      * GET /projects
      * Create a new member account
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
      */
     projects = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const allProjects = await Project.find({})
+
+            let findCondition = {}
+            if (req.user.role !== "admin" && req.user.role === "projectManager") {
+                findCondition = { "members" : mongoose.Types.ObjectId(req.user._id) }
+            } else{
+                return res.status(403).send(new Unauthorized().parse())
+            }
+
+            const allProjects = await Project.find(findCondition)
                                         .populate("projectType", "title")
                                         .populate("countMembers")
                                         .select("-__v -owners").lean().exec()
@@ -48,6 +61,7 @@ class ProjectController {
                 members,
                 owners,
                 projectType,
+                createdBy: req.user._id,
                 endDate,
                 detail
             })
@@ -143,6 +157,12 @@ class ProjectController {
      */
     public addMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
+            // Check User Authorization
+            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
+                return res.status(403).send(new Unauthorized().parse())
+            }
+            
             const ids = req.body.members
             const idsExists = Array.from(ids).filter(i => !!i.length)
 
@@ -153,7 +173,12 @@ class ProjectController {
             let membersId = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] :
                                     Array.from(req.body.members).map(id => mongoose.Types.ObjectId(id))
 
-            const updateProject = await Project.findOneAndUpdate({ _id: mongoose.Types.ObjectId(req.params.id), members: { $nin: membersId } },
+            const updateProject = await Project.findOneAndUpdate(
+                { _id: mongoose.Types.ObjectId(req.params.id), 
+                    members: { 
+                        $nin: membersId, $in: [ mongoose.Types.ObjectId(req.user._id) ] 
+                    }
+                },
                 { $push: { members: { $each: membersId } } },
                 { upsert: true }
             ).exec()
@@ -189,15 +214,25 @@ class ProjectController {
      */
     public removeMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const membersId = typeof req.body.members === "string" ? [req.body.members] : req.body.members
 
+            // Check User Authorization
+            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
+                return res.status(403).send(new Unauthorized().parse())
+            }
+
+            const membersId = typeof req.body.members === "string" ? [req.body.members] : req.body.members
             const idsExists = Array.from(membersId).filter(i => !!i.length)
 
             if (!idsExists.length) {
                 throw new Error("Member shouldn't be empty.")
             }
 
-            const updateProject = await Project.findOneAndUpdate(req.params.id,
+            const updateProject = await Project.findOneAndUpdate(
+                {    _id: mongoose.Types.ObjectId(req.params.id), 
+                    members: { 
+                        $in: [ mongoose.Types.ObjectId(req.user._id) ] 
+                    }
+                },
                 { $pull: { members: { $in: membersId } } },
                 { upsert: true }
             ).exec()
@@ -223,9 +258,14 @@ class ProjectController {
     public addOwners = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const ids = req.body.owners
+            // Check User Authorization
+            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
+                return res.status(403).send(new Unauthorized().parse())
+            }
 
+            const ids = req.body.owners
             const idsExists = Array.from(ids).filter(i => !!i.length)
+
             if (!idsExists.length) {
                 throw new Error("Owners id should not be emtpy")
             }
@@ -233,13 +273,19 @@ class ProjectController {
             let ownersId = typeof ids === "string" ? [mongoose.Types.ObjectId(ids)] :
                 Array.from(ids).map(id => mongoose.Types.ObjectId(id))
 
-            const updateProject = await Project.findOneAndUpdate({ _id: mongoose.Types.ObjectId(req.params.id), owners: { $nin: ownersId } },
+            const updateProject = await Project.findOneAndUpdate(
+                {   _id: mongoose.Types.ObjectId(req.params.id), 
+                    owners: { $nin: ownersId },
+                    members: { 
+                        $in: [ mongoose.Types.ObjectId(req.user._id) ] 
+                    }
+                },
                 { $push: { owners: { $each: ownersId } } },
                 { upsert: true }
             ).exec()
 
             if (!updateProject) {
-                throw new Error("Problem with updating project !")
+                throw new Error("Problem with adding project owners !")
             }
 
             res.status(201).json({
@@ -257,14 +303,26 @@ class ProjectController {
 
     public removeOwners = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const ownersId = typeof req.body.owners === "string" ? [req.body.owners] : req.body.owners
+            
+            // Check User Authorization
+            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
+                return res.status(403).send(new Unauthorized().parse())
+            }
 
+            const ownersId = typeof req.body.owners === "string" ? [req.body.owners] : req.body.owners
             const idsExists = Array.from(ownersId).filter(i => !!i.length)
+
             if (!idsExists.length) {
                 throw new Error("Owners id should not be emtpy.")
             }
 
-            const updateProject = await Project.findOneAndUpdate(req.params.id,
+            const updateProject = await Project.findOneAndUpdate({
+                _id: mongoose.Types.ObjectId(req.params.id),
+                owners: { $in: ownersId },
+                members: { 
+                    $in: [ mongoose.Types.ObjectId(req.user._id) ] 
+                }
+            },
                 { $pull: { owners: { $in: ownersId } } },
                 { upsert: true }
             ).exec()

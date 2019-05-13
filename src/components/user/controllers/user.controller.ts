@@ -58,6 +58,18 @@ class UserController {
     }
 
     /**
+     * POST /id/upload-profile
+     * Update member account
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public uploadProfile = (req: Request, res: Response, next: NextFunction) => {
+        res.send("Upload user profile")
+    }
+
+    /**
      * PUT /id/update
      * Update member account
      * 
