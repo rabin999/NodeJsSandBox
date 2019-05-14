@@ -6,18 +6,17 @@ import Project from "../model/project.model"
 // import mongoose, { mongo } from "mongoose"
 import mongoose from "mongoose"
 
-
 class ProjectController {
 
     /**
      * GET /projects
-     * Create a new member account
+     * Get all projects
      * 
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
      */
-    projects = async (req: Request, res: Response, next: NextFunction) => {
+    public projects = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
             let findCondition = {}

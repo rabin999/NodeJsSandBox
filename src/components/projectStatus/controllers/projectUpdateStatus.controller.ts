@@ -31,7 +31,7 @@ class ProjectUpdateStatusController {
                     break;
                 default:
                     const err = new NotAuthorized()
-                    res.status(500).json(err.parse())
+                    return res.status(500).json(err.parse())
                     break;
             }
 

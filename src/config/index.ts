@@ -23,6 +23,7 @@ const config = {
 
     /**
      * ENVIRONMENT
+     * -----------
      * 
      * development -    help to debug and maintain
      * production -     for deployment
@@ -41,8 +42,20 @@ const config = {
     session_secret : process.env.SESSION_SECRET,
     client_secret : process.env.CLIENT_SECRET,
 
+    /** 
+     * IMAGE UPLOAD
+     * ------------
+     * - USER
+     * - PROEJCT
+    */
+    upload: {
+       user: "",
+       projectLogo:""
+    }
+
     /**
      * PASSPORT CONFIGURATION
+     * ----------------------
      * TOKEN
      * - expiresAt in 12 months
      */

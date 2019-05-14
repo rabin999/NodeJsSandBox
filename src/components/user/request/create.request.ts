@@ -8,11 +8,12 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
     
     // Fullname
     req.assert("fullname").exists()
-        .not().isEmpty().withMessage("Fullname required")
+        .not().isEmpty().withMessage("Fullname is required")
         .isLength({ min: 5 }).withMessage("Fullname must be 5 characters")
 
     // Role
-    req.assert("role").notEmpty().withMessage("Role required").isIn(["admin", "project_manager", "client"]).withMessage("Given role is not valid.")
+    req.assert("role").notEmpty().withMessage("Role is required")
+            .isIn(["admin", "projectManager", "client"]).withMessage("Given role is not valid.")
 
     // Email
     req.assert("email", "Email is not valid").isEmail()
@@ -36,13 +37,13 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
     
 
     // Password
-    req.assert("password").notEmpty().withMessage("Password required")
+    req.assert("password").notEmpty().withMessage("Password is required")
 
     // Password
     req.assert("confirmPassword").equals(req.body.password).withMessage("Password doesn't match")
 
     // Designation
-    req.assert("designation").notEmpty().withMessage("Designation required")
+    req.assert("designation").notEmpty().withMessage("Designation is required")
 
     // process errors
     const errors = req.validationErrors()
