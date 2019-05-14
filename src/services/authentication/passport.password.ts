@@ -53,7 +53,7 @@ passport.use(new BasicStrategy(verifyClient))
 passport.use(new ClientPasswordStrategy.Strategy(verifyClient))
 
 passport.use(new BearerStrategy(
-    async (accessToken, done) => {
+    async (accessToken: string, done: any) => {
         try {
             let tokenUser = await User.findOne({ "token.accessToken": accessToken }).lean().exec()
 

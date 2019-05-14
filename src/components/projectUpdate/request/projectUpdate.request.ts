@@ -14,9 +14,6 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
     // Project update's project
     req.assert("project").notEmpty().withMessage("Project ID is required")
 
-    // Project update pushed by
-    req.assert("pushedBy").notEmpty().withMessage("Project update pushedBy Id is required")
-
     // process errors
     const errors = req.validationErrors()
     

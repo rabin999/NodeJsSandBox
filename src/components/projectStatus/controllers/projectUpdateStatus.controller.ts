@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import ProjectUpdate  from "../../projectUpdate/model/projectUpdate.model"
 import HttpException from "../../../exceptions/HttpException"
-// import ProjectUpdateNotFound from "../../../exceptions/m"
+import NotAuthorized from "../../../exceptions/NotAuthorizedException"
 import mongoose from "mongoose"
 
 class ProjectUpdateStatusController {
@@ -16,11 +16,30 @@ class ProjectUpdateStatusController {
      */
     public projectUpdateStatus = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
+            // "project."
+            let findCondition = {}
+            switch(req.user.role) {
+                case "admin":
+                    findCondition = { _id: mongoose.Types.ObjectId(req.params.projectUpdateId) }
+                    break;
+                case "projectManager":
+                    findCondition = { _id: mongoose.Types.ObjectId(req.params.projectUpdateId), pushedBy: mongoose.Types.ObjectId(req.user._id) }
+                    break;
+                case "client":
+                    findCondition = { _id: mongoose.Types.ObjectId(req.params.projectUpdateId), "status.ratedBy": mongoose.Types.ObjectId(req.user._id) }
+                    break;
+                default:
+                    const err = new NotAuthorized()
+                    res.status(500).json(err.parse())
+                    break;
+            }
+
             const updates = await ProjectUpdate
-                                .find({ project: mongoose.Types.ObjectId(req.params.projectUpdateId) }).select("scope")
+                                .find(findCondition).select("status")
                                 .sort({ "_id": -1 })
                                 .limit(5)
-                                .lean().populate("status.ratedBy").exec()
+                                .populate("status.ratedBy").lean().exec()
                                 
             return res.json(updates)
         }
@@ -44,12 +63,12 @@ class ProjectUpdateStatusController {
     public create = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const { rate, ratedBy } = req.body
+            const { rate } = req.body
             const newProjectStatus = await ProjectUpdate.findByIdAndUpdate(req.params.projectUpdateId, {
                 $push: {
                     status: {
                         rate,
-                        ratedBy
+                        ratedBy: req.user._id
                     }
                 }
             }, { upsert: true })
@@ -78,7 +97,8 @@ class ProjectUpdateStatusController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const deleteProjectUpdateStatus = await ProjectUpdate.findOneAndUpdate({ "status._id" : mongoose.Types.ObjectId(req.params.id) },
+            const deleteProjectUpdateStatus = await ProjectUpdate.findOneAndUpdate(
+                { "status._id" : mongoose.Types.ObjectId(req.params.id), pushedBy: mongoose.Types.ObjectId(req.user._id) },
                 { $pull: { status: { _id: mongoose.Types.ObjectId(req.params.id) } }},
                 { upsert: true }
             ).exec()

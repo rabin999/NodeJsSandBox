@@ -1,6 +1,7 @@
 import { Router } from "express"
 import ProjectUpdateStatusController from "../controllers/projectUpdateStatus.controller"
 import ProjectUpdateStatus from "../request/projectStatus.request"
+import RoleMiddleware from "../../../middleware/role.middleware"
 
 class ProjectStatusRoutes {
 
@@ -11,8 +12,8 @@ class ProjectStatusRoutes {
         this._route = Router()
 
         this._route.get("/:projectUpdateId", new ProjectUpdateStatusController().projectUpdateStatus)
-        this._route.post("/:projectUpdateId/create", ProjectUpdateStatus, new ProjectUpdateStatusController().create)
-        this._route.delete("/:id/delete", new ProjectUpdateStatusController().delete)
+        this._route.post("/:projectUpdateId/create", RoleMiddleware(["projectManager", "client"]), ProjectUpdateStatus, new ProjectUpdateStatusController().create)
+        this._route.delete("/:id/delete", RoleMiddleware(["projectManager"]), new ProjectUpdateStatusController().delete)
     }
 
     get route()

@@ -3,6 +3,7 @@ import ProjectUpdate  from "../model/projectUpdate.model"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectUpdateNotFound from "../../../exceptions/ProjectUpdateNotFoundException"
 import mongoose from "mongoose"
+import Unauthorized from "../../../exceptions/NotAuthorizedException"
 
 class ProjectUpdateController {
 
@@ -16,7 +17,15 @@ class ProjectUpdateController {
      */
     public projectUpdates = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updates = await ProjectUpdate.find({ project: mongoose.Types.ObjectId(req.params.projectId ) }).select("-__v").lean().exec()
+
+            let findCondition = {}
+            if (req.user.role !== "admin" && req.user.role === "projectManager") {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy : req.user._id }
+            } else {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
+            }
+
+            const updates = await ProjectUpdate.find(findCondition).select("-__v").lean().exec()
             return res.json(updates)
         }
         catch (error) {
@@ -39,13 +48,15 @@ class ProjectUpdateController {
     public create = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const { title, description, remark, project, pushedBy } = req.body
+
+            const { title, description, remark, project } = req.body
+
             const newUpdate = await ProjectUpdate.create({
                 title,
                 description,
                 remark,
                 project, 
-                pushedBy
+                pushedBy: req.user._id
             })
 
             return res.status(201).json({
@@ -104,14 +115,19 @@ class ProjectUpdateController {
      */
     public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
+            let findCondition = {}
+            if (req.user.role !== "admin" && req.user.role === "projectManager") {
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy : req.user._id }
+            } else {
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), }
+            }
 
-            const { title, description, remark, project, pushedBy } = req.body
-            const updated = await ProjectUpdate.findByIdAndUpdate( req.params.id, {
+            const { title, description, remark, project } = req.body
+            const updated = await ProjectUpdate.findByIdAndUpdate( findCondition, {
                 title,
                 description,
-                remark,
-                project, 
-                pushedBy
+                remark
             })
 
             if (!updated) {
@@ -143,7 +159,14 @@ class ProjectUpdateController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const deletedUpdate = await ProjectUpdate.findByIdAndDelete(req.params.id).exec()
+            let findCondition = {}
+            if (req.user.role !== "admin" && req.user.role === "projectManager") {
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy : req.user._id }
+            } else {
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), }
+            }
+
+            const deletedUpdate = await ProjectUpdate.findOneAndDelete(findCondition).exec()
 
             if (!deletedUpdate) {
                 const err = new ProjectUpdateNotFound(req.params.id)

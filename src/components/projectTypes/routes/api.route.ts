@@ -11,7 +11,7 @@ class ProjecTypeRoute {
     {
         this._route = Router()
         
-        this._route.get("/", new ProjectTypeController().allProjectTypes)
+        this._route.get("/", RoleMiddleware(["admin", "projectManager"]), new ProjectTypeController().allProjectTypes)
         this._route.post("/create", RoleMiddleware(["admin"]), ProjectCreateRequest, new ProjectTypeController().create)
         this._route.delete("/:id/delete", RoleMiddleware(["admin"]), new ProjectTypeController().delete)
     }

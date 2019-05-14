@@ -35,7 +35,7 @@ class BaseRoutes {
     }
 
     get route()
-    {
+    { 
         return this._route;
     }
 }

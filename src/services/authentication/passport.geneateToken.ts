@@ -15,7 +15,7 @@ const server = oauth2orize.createServer();
 // authorization request for verification. If these values are validated, the
 // application issues an access token on behalf of the user who authorized the code.
 
-server.exchange(oauth2orize.exchange.password(async (client, email, password, scope, done) => {
+server.exchange(oauth2orize.exchange.password(async (client, email: string, password: string, scope: string | string[], done: any) => {
     try {
         await User.findOne({ email: email.toLowerCase() }, (err, user: any) => {
             if (err) {

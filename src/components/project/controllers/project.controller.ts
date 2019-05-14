@@ -6,6 +6,7 @@ import Project from "../model/project.model"
 // import mongoose, { mongo } from "mongoose"
 import mongoose from "mongoose"
 
+
 class ProjectController {
 
     /**
@@ -22,8 +23,6 @@ class ProjectController {
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
                 findCondition = { "members" : mongoose.Types.ObjectId(req.user._id) }
-            } else{
-                return res.status(403).send(new Unauthorized().parse())
             }
 
             const allProjects = await Project.find(findCondition)
@@ -158,13 +157,8 @@ class ProjectController {
      */
     public addMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            
-            // Check User Authorization
-            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
-                return res.status(403).send(new Unauthorized().parse())
-            }
-            
-            const ids = req.body.members
+
+            const ids: string = req.body.members
             const idsExists = Array.from(ids).filter(i => !!i.length)
 
             if (!idsExists.length) {
@@ -172,13 +166,12 @@ class ProjectController {
             }
 
             let membersId = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] :
-                                    Array.from(req.body.members).map(id => mongoose.Types.ObjectId(id))
-
+                                    Array.from(ids).map(id => mongoose.Types.ObjectId(id))
+        
             const updateProject = await Project.findOneAndUpdate(
-                { _id: mongoose.Types.ObjectId(req.params.id), 
-                    members: { 
-                        $nin: membersId, $in: [ mongoose.Types.ObjectId(req.user._id) ] 
-                    }
+                {
+                    _id: mongoose.Types.ObjectId(req.params.id),
+                    $nin: membersId
                 },
                 { $push: { members: { $each: membersId } } },
                 { upsert: true }
@@ -216,22 +209,22 @@ class ProjectController {
     public removeMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            // Check User Authorization
-            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
-                return res.status(403).send(new Unauthorized().parse())
-            }
-
-            const membersId = typeof req.body.members === "string" ? [req.body.members] : req.body.members
-            const idsExists = Array.from(membersId).filter(i => !!i.length)
+            const ids: string = req.body.members
+            const idsExists = Array.from(ids).filter(i => !!i.length)
 
             if (!idsExists.length) {
                 throw new Error("Member shouldn't be empty.")
             }
 
+            let membersId: mongoose.Types.ObjectId[] = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] :
+                                    Array.from(ids).map(id => mongoose.Types.ObjectId(id))
+
+
             const updateProject = await Project.findOneAndUpdate(
-                {    _id: mongoose.Types.ObjectId(req.params.id), 
+                {
+                    _id: mongoose.Types.ObjectId(req.params.id), 
                     members: { 
-                        $in: [ mongoose.Types.ObjectId(req.user._id) ] 
+                        $in: membersId
                     }
                 },
                 { $pull: { members: { $in: membersId } } },
@@ -244,7 +237,7 @@ class ProjectController {
             }
 
             res.status(201).json({
-                message: `Members ${membersId} removed from Project ${updateProject.title} successfully.`
+                message: `Members ${membersId.pop()} removed from Project ${updateProject.title} successfully.`
             })
         }
         catch (error) {
@@ -259,12 +252,7 @@ class ProjectController {
     public addOwners = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            // Check User Authorization
-            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
-                return res.status(403).send(new Unauthorized().parse())
-            }
-
-            const ids = req.body.owners
+            const ids : string | string[] = req.body.owners
             const idsExists = Array.from(ids).filter(i => !!i.length)
 
             if (!idsExists.length) {
@@ -272,14 +260,11 @@ class ProjectController {
             }
 
             let ownersId = typeof ids === "string" ? [mongoose.Types.ObjectId(ids)] :
-                Array.from(ids).map(id => mongoose.Types.ObjectId(id))
+                            Array.from(ids).map(id => mongoose.Types.ObjectId(id))
 
             const updateProject = await Project.findOneAndUpdate(
                 {   _id: mongoose.Types.ObjectId(req.params.id), 
                     owners: { $nin: ownersId },
-                    members: { 
-                        $in: [ mongoose.Types.ObjectId(req.user._id) ] 
-                    }
                 },
                 { $push: { owners: { $each: ownersId } } },
                 { upsert: true }
@@ -304,13 +289,8 @@ class ProjectController {
 
     public removeOwners = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            
-            // Check User Authorization
-            if ( !(["admin", "projectManager"].includes(req.user.role)) ) {
-                return res.status(403).send(new Unauthorized().parse())
-            }
 
-            const ownersId = typeof req.body.owners === "string" ? [req.body.owners] : req.body.owners
+            const ownersId :string = typeof req.body.owners === "string" ? [req.body.owners] : req.body.owners
             const idsExists = Array.from(ownersId).filter(i => !!i.length)
 
             if (!idsExists.length) {
@@ -320,9 +300,6 @@ class ProjectController {
             const updateProject = await Project.findOneAndUpdate({
                 _id: mongoose.Types.ObjectId(req.params.id),
                 owners: { $in: ownersId },
-                members: { 
-                    $in: [ mongoose.Types.ObjectId(req.user._id) ] 
-                }
             },
                 { $pull: { owners: { $in: ownersId } } },
                 { upsert: true }
