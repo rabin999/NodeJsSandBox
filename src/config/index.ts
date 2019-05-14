@@ -49,9 +49,13 @@ const config = {
      * - PROEJCT
     */
     upload: {
-       user: "",
-       projectLogo:""
-    }
+       user: {
+           dest: "uploads/users",
+           // MB
+           uploadSize: 1
+       },
+       projectLogo: "uploads/projects"
+    },
 
     /**
      * PASSPORT CONFIGURATION

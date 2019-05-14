@@ -29,6 +29,7 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
 
         // Designation
         req.assert("designation").notEmpty().withMessage("Designation is required")
+        
     } else {
         if (req.user._id != req.params.id) {
             const errs = new NotAuthorized()
