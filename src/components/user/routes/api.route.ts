@@ -13,7 +13,8 @@ class UserRoutes {
         this._route = Router()
 
         this._route.get("/", RoleMiddleware(["admin"]), new UserController().users)
-        this._route.get("/:id/profile", new UserController().profile)
+        this._route.get("/:id/profilePicture", new UserController().profilePicture)
+        this._route.get("/profile", new UserController().profile)
         this._route.post("/signup", RoleMiddleware(["admin"]), SignUpRequest, new UserController().create)
         this._route.post("/:id/uploadProfile", new UserController().uploadProfile)
         this._route.put("/:id/update", UpdateRequest, new UserController().update)

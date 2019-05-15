@@ -31,7 +31,12 @@ class ProjectController {
 
             const allProjects = await Project.find(findCondition)
                                         .populate("projectType", "title")
-                                        .populate("countMembers")
+                                        .populate("totalMembers")
+                                        .populate("newUpdates")
+                                        .populate({
+                                            path: "recentUpdate",
+                                            select: "createdAt"
+                                        })
                                         .select("-__v -owners").lean().exec()
 
             return res.json(allProjects)
@@ -84,6 +89,28 @@ class ProjectController {
                 res.setHeader('Content-Type', mimeType);
 
             fs.createReadStream(path.join(UPLOAD_PATH, project.logo)).pipe(res)
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * GET /project/:id/members
+     * Get project logo
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public members = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const members = await Project.findById(req.params.id, { members: 1 }).populate("members").lean().exec()
+            res.send(members)
         }
         catch (error) {
             const err = new HttpException({

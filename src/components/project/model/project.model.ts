@@ -36,11 +36,32 @@ const projectSchema = new mongoose.Schema({
     timestamps: true
 })
 
-projectSchema.virtual("countMembers", {
+projectSchema.virtual("totalMembers", {
     ref: "user",
     localField: "members",
     foreignField: "_id",
     count: true
+})
+
+projectSchema.virtual("newUpdates", {
+    ref: "projectUpdate",
+    localField: "_id",
+    foreignField: "project",
+    options: {
+        match: { seen: true }
+    },
+    count: true
+})
+
+projectSchema.virtual("recentUpdate", {
+    ref: "projectUpdate",
+    localField: "_id",
+    foreignField: "project",
+    options: {
+        limit: 1,
+        sort: { _id : -1 },
+        match: { seen: true }
+    }
 })
 
 export default mongoose.model("project", projectSchema)

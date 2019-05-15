@@ -3,7 +3,6 @@ import ProjectUpdate  from "../model/projectUpdate.model"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectUpdateNotFound from "../../../exceptions/ProjectUpdateNotFoundException"
 import mongoose from "mongoose"
-import Unauthorized from "../../../exceptions/NotAuthorizedException"
 
 class ProjectUpdateController {
 
@@ -26,6 +25,42 @@ class ProjectUpdateController {
             }
 
             const updates = await ProjectUpdate.find(findCondition).select("-__v").lean().exec()
+            return res.json(updates)
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+     /**
+     * GET project-updates/:projectId/filter/:month
+     * Get all project updates filter using month
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public filterProjectUpdate = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            let findCondition = {}
+            if (req.user.role !== "admin" && req.user.role === "projectManager") {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy : req.user._id, $month: req.params.month }
+            } else {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), $month: req.params.month }
+            }
+
+            // * working
+            const updates = await ProjectUpdate.aggregate([
+                {
+                    $match: findCondition 
+                }
+            ]).exec()
+
             return res.json(updates)
         }
         catch (error) {

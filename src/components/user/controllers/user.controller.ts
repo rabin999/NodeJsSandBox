@@ -47,6 +47,30 @@ class UserController {
     public profile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.params.id
+            const user = await User.findById(req.user._id).lean().exec()
+
+            res.send(user)
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * GET /users/:id/profilePicture
+     * Get user profile picture
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public profilePicture = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = req.params.id
             const profile = await User.findById(userId).select("image -_id").lean().exec()
 
             // Image not found

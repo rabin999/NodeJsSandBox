@@ -64,11 +64,8 @@ class ProjectController {
                 from: `"Fred Foo 👻" <${config.email.gmail.username}>`, // sender address
                 to: mail, // list of receivers
                 subject: "Request for password reset", // Subject line
-                text: `Click here to reset your password ${link}. Thank you !`
+                text: `Click here to reset your password ${link}.This token will be expire after 24 hours, Thank you !`
             })
-
-            // passwordResetToken: String,
-            // passwordResetExpiresAt: Date,
             
             // update user
             await User.findOneAndUpdate({ email: mail }, {

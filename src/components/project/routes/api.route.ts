@@ -13,6 +13,7 @@ class ProjectRoutes {
 
         this._route.get("/", RoleMiddleware(["admin", "projectManager"]), new ProjectController().projects)
         this._route.get("/:id/logo", new ProjectController().logo)
+        this._route.get("/:id/members", new ProjectController().members)
         this._route.post("/create", RoleMiddleware(["admin"]), ProjectCreateRequest, new ProjectController().create)
         this._route.put("/:id/update", RoleMiddleware(["admin"]), ProjectCreateRequest, new ProjectController().update)
         this._route.put("/:id/uploadLogo", RoleMiddleware(["admin"]), new ProjectController().uploadLogo)
