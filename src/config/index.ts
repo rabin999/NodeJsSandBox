@@ -51,10 +51,16 @@ const config = {
     upload: {
        user: {
            dest: "uploads/users",
+           
            // MB
            uploadSize: 1
        },
-       projectLogo: "uploads/projects"
+       projectLogo: {
+           dest: "uploads/projects",
+
+           // MB
+           uploadSize: 1
+       }
     },
 
     /**

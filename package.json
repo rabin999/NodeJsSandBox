@@ -27,6 +27,7 @@
     "@types/passport-http": "^0.3.8",
     "@types/passport-http-bearer": "^1.0.33",
     "@types/passport-oauth2-client-password": "^0.1.2",
+    "@types/rimraf": "^2.0.2",
     "@types/uuid": "^3.4.4",
     "@types/winston": "^2.4.4",
     "bcrypt-nodejs": "0.0.3",
@@ -48,6 +49,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-oauth2-client-password": "^0.1.2",
+    "rimraf": "^2.6.3",
     "typescript": "^3.4.5",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"

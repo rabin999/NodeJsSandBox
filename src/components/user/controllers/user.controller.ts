@@ -10,7 +10,6 @@ import config from "../../../config"
 import mimeTypes from "mime-types"
 import path from "path"
 import fs from "fs"
-import removeDir from "../../../services/fs/removeDir"
 
 class UserController {
 
@@ -47,14 +46,35 @@ class UserController {
      */
     public profile = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const userId = req.params.id
+            const profile = await User.findById(userId).select("image -_id").lean().exec()
 
-            const profile = await User.findById(req.params.id).select("image").lean().exec()
-            const mimeType = mimeTypes.contentType(profile)
+            // Image not found
+            if (!profile.image) {
+                const err = new HttpException({
+                    status: 404,
+                    message: "Profile picture not found."
+                })
+                return res.status(404).json(err.parse())
+            }
 
-            return res.json(profile)
+            const UPLOAD_PATH = path.resolve(config.upload.user.dest + "/" + userId)
+            
+            // Image file not found
+            if (!fs.existsSync(path.join(UPLOAD_PATH, profile.image))) {
+                const err = new HttpException({
+                    status: 404,
+                    message: "Profile picture not found."
+                })
+                return res.status(404).json(err.parse())
+            }
 
-            // res.setHeader('Content-Type', result.mimetype);
-            // fs.createReadStream(path.join(UPLOAD_PATH, profile)).pipe(res);
+            // if mime exists set header
+            const mimeType = mimeTypes.contentType(profile.image)
+            if (mimeType)
+                res.setHeader('Content-Type', mimeType);
+
+            fs.createReadStream(path.join(UPLOAD_PATH, profile.image)).pipe(res)
         }
         catch (error) {
             const err = new HttpException({
@@ -115,7 +135,6 @@ class UserController {
      */
     public uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
         
-        // return res.send(path.resolve(config.upload.user.dest + "/" + req.user._id))
         if (req.user.role !== "admin" && req.user._id !== req.params.id) {
             const error = new NotAuthorized()
             return res.status(403).json(error.parse())
@@ -123,23 +142,24 @@ class UserController {
 
         try {
             
+            const userId = req.params.id
             let imageName = ""
-            const uploadDir = path.resolve(config.upload.user.dest + "/" + req.user._id)
+            const uploadDir = path.resolve(config.upload.user.dest + "/" + userId)
 
-            const user = await User.findById(req.params.id).lean().exec()
+            const user = await User.findById(userId).lean().exec()
 
             // create folder if not exits
             if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive:true })
-            } else {
-                if (user.image) {
-                    fs.unlinkSync(path.resolve(config.upload.user.dest + "/" + req.user._id + "/" + user.image))
-                }
+                fs.mkdirSync(uploadDir, { recursive: true })
+            }
+
+            if (user.image && fs.existsSync(path.join(uploadDir, user.image))) {
+                fs.unlinkSync(path.join(uploadDir, user.image))
             }
 
             const storage = multer.diskStorage({
                 destination: async (req, file, cb) => {
-                    cb(null, path.resolve(config.upload.user.dest + "/" + req.user._id))
+                    cb(null, path.resolve(config.upload.user.dest + "/" + userId))
                 },
                 filename: (req, file, cb) => {
                     imageName = file.originalname
@@ -173,16 +193,16 @@ class UserController {
                 if (!req.file) {
                     const err = new HttpException({
                         status: 404,
-                        message: "File Not Found"
+                        message: "Please select a profile picture"
                     })
                     return res.status(404).json(err.parse())
                 }
 
                 // update user profile image
-                await User.findByIdAndUpdate(req.params.id, { image: imageName })
+                await User.findByIdAndUpdate(userId, { image: imageName })
 
                 res.send({
-                    message: `User ${req.user.fullname} profile image uploaded successfully.`
+                    message: `User id ${userId} profile image uploaded successfully.`
                 })
             })
         } catch (error) {

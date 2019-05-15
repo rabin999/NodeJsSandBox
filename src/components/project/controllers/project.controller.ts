@@ -1,10 +1,16 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectNotFound from "../../../exceptions/ProjectNotFoundException"
-import Unauthorized from "../../../exceptions/NotAuthorizedException"
+import NotAuthorized from "../../../exceptions/NotAuthorizedException"
 import Project from "../model/project.model"
 // import mongoose, { mongo } from "mongoose"
 import mongoose from "mongoose"
+import multer from "multer"
+import config from "../../../config"
+import mimeTypes from "mime-types"
+import path from "path"
+import fs from "fs"
+import rimraf from "rimraf"
 
 class ProjectController {
 
@@ -30,6 +36,55 @@ class ProjectController {
                                         .select("-__v -owners").lean().exec()
 
             return res.json(allProjects)
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * GET /project/:id/logo
+     * Get project logo
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public logo = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const projectId = req.params.id
+            const project = await Project.findById(projectId).select("logo -_id").lean().exec()
+
+            // Image not found
+            if (!project.logo) {
+                const err = new HttpException({
+                    status: 404,
+                    message: "Project logo not found."
+                })
+                return res.status(404).json(err.parse())
+            }
+
+            const UPLOAD_PATH = path.resolve(config.upload.projectLogo.dest + "/" + projectId)
+            
+            // Image file not found
+            if (!fs.existsSync(path.join(UPLOAD_PATH, project.logo))) {
+                const err = new HttpException({
+                    status: 404,
+                    message: "Project logo not found."
+                })
+                return res.status(404).json(err.parse())
+            }
+
+            // if mime exists set header
+            const mimeType = mimeTypes.contentType(project.logo)
+            if (mimeType)
+                res.setHeader('Content-Type', mimeType);
+
+            fs.createReadStream(path.join(UPLOAD_PATH, project.logo)).pipe(res)
         }
         catch (error) {
             const err = new HttpException({
@@ -69,6 +124,89 @@ class ProjectController {
             })
         }
         catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * PUT /:id/uploadLogo
+     * Upload Project Logo
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public uploadLogo = async (req: Request, res: Response, next: NextFunction) => {
+
+        try {
+            
+            const projectId = req.params.id
+            let imageName = ""
+            const uploadDir = path.resolve(config.upload.projectLogo.dest + "/" + projectId)
+            const project = await Project.findById(projectId).lean().exec()
+
+            // create folder if not exits
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true })
+            }
+
+            if (project.logo && fs.existsSync(path.join(uploadDir, project.logo))) {
+                fs.unlinkSync(path.join(uploadDir, project.logo))                    
+            }
+
+            const storage = multer.diskStorage({
+                destination: async (req, file, cb) => {
+                    cb(null, path.resolve(uploadDir))
+                },
+                filename: (req, file, cb) => {
+                    imageName = file.originalname
+                    cb(null, imageName)
+                }
+            })
+
+            const upload = multer({
+                storage,
+                limits: {
+                    fileSize: 1024 * 1024 * config.upload.projectLogo.uploadSize
+                },
+                fileFilter: (req, file, cb) => {
+                    // accept image only
+                    if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+                        cb(new Error('Only image files are allowed!'), false)
+                    }
+                    cb(null, true)
+                }
+            }).single('logo')
+
+            upload(req, res, async function (error) {
+                if (error) {
+                    const err = new HttpException({
+                        status: 500,
+                        message: error.toString()
+                    })
+                    return res.status(500).json(err.parse())
+                }
+                
+                if (!req.file) {
+                    const err = new HttpException({
+                        status: 404,
+                        message: "Please select a logo"
+                    })
+                    return res.status(404).json(err.parse())
+                }
+
+                // update user profile image
+                await Project.findByIdAndUpdate(projectId, { logo: imageName })
+
+                res.send({
+                    message: `Project id ${projectId} logo uploaded successfully.`
+                })
+            })
+        } catch (error) {
             const err = new HttpException({
                 status: 500,
                 message: error.toString()
