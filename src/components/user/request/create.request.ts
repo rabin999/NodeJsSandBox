@@ -40,7 +40,7 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
     req.assert("password").notEmpty().withMessage("Password is required")
 
     // Password
-    req.assert("confirmPassword").equals(req.body.password).withMessage("Password doesn't match")
+    req.assert("confirmPassword").notEmpty().withMessage("confirmPassword password is required").equals(req.body.password).withMessage("Password doesn't match")
 
     // Designation
     req.assert("designation").notEmpty().withMessage("Designation is required")

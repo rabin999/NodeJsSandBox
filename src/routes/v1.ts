@@ -5,6 +5,7 @@ import ProjectTypeRoutes from "../components/projectTypes/routes/api.route"
 import ProjectRoutes from "../components/project/routes/api.route"
 import ProjectUpdateRoutes from "../components/projectUpdate/routes/api.route"
 import ProjectStatusRoutes from "../components/projectStatus/routes/api.route"
+import PasswordResetRoutes from "../components/password/routes/api.route"
 import passport from "passport"
 
 class BaseRoutes {
@@ -22,6 +23,9 @@ class BaseRoutes {
         this.route.get("/", (req: Request, res: Response) => {
             res.send("welcome to API")
         })
+        
+        // Password Reset link
+        this._route.use("/", new PasswordResetRoutes().route)
 
         // Check authorization
         this._route.use(passport.authenticate('bearer', { session: false }))

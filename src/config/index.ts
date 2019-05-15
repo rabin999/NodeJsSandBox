@@ -64,6 +64,19 @@ const config = {
     },
 
     /**
+     * -------------------------------
+     * EMAIL CONFIGURATION
+     * --------------------------------
+     */
+    email: {
+        gmail: {
+            provider: "Gmail",
+            username: "baakhapaa@gmail.com",
+            password: "linuxislife",
+        }
+    },
+
+    /**
      * PASSPORT CONFIGURATION
      * ----------------------
      * TOKEN

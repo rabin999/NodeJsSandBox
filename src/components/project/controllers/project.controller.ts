@@ -10,7 +10,6 @@ import config from "../../../config"
 import mimeTypes from "mime-types"
 import path from "path"
 import fs from "fs"
-import rimraf from "rimraf"
 
 class ProjectController {
 

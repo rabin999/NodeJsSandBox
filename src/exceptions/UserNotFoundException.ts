@@ -9,7 +9,7 @@ class UserNotFoundException extends HttpException {
     {
         super({
             status: 404,
-            message: `User with id ${id} not found`
+            message: `User with ${id} not found`
         })
     }
 }
