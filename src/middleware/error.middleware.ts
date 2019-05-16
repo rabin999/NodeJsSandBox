@@ -26,25 +26,25 @@ function errorMiddleware(error: HttpException, request: Request, response: Respo
      */
     if (error instanceof SyntaxError) {
 
-      const status = 500
+      const statusCode = 500
       const message = error.message
-      
-      response.status(status).send(new HttpException({
-        status,
+
+      response.status(statusCode).send(new HttpException({
+        status: statusCode,
         message
       }).parse())
 
     } else {
 
-      const status = error.params.status || 500
+      const statusCode = error.params.status || 500
       const message = error.message || "Something went wrong"
 
-      response.status(status).send({
-          message,
-          status,
-      })
+      response.status(statusCode).send(new HttpException({
+        status: statusCode,
+        message
+      }).parse())
 
     }
   }
-  
+
   export default errorMiddleware

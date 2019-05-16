@@ -24,7 +24,7 @@ const config = {
     /**
      * ENVIRONMENT
      * -----------
-     * 
+     *
      * development -    help to debug and maintain
      * production -     for deployment
      */
@@ -39,10 +39,10 @@ const config = {
         password: process.env.DATABASE_NAME || "",
     },
 
-    session_secret : process.env.SESSION_SECRET,
-    client_secret : process.env.CLIENT_SECRET,
+    session_secret : process.env.SESSION_SECRET || "ashdfjhasdlkjfhalksdjhflak",
+    client_secret : process.env.CLIENT_SECRET || "ashdfjhasdlkjfhalksdjhflak",
 
-    /** 
+    /**
      * IMAGE UPLOAD
      * ------------
      * - USER
@@ -51,7 +51,7 @@ const config = {
     upload: {
        user: {
            dest: "uploads/users",
-           
+
            // MB
            uploadSize: 1
        },
