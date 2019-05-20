@@ -42,6 +42,70 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/forgetPassword": {
+      "post": {
+        "tags": [
+          "Password"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "description": "Send password reset link",
+        "parameters": [
+          {
+            "name": "mail",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Send password reset link in mail"
+          }
+        }
+      }
+    },
+    "/api/v1/resetPassword/{token}": {
+      "parameters": [
+        {
+          "name": "token",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "put": {
+        "tags": [
+          "Password"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "summary": "Reset user new password based on token",
+        "parameters": [
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "confirmPassword",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User new password updated"
+          }
+        }
+      }
+    },
     "/oauth/access-token": {
       "post": {
         "tags": [
@@ -773,6 +837,40 @@
           }
         }
       }
+    },
+    "/api/v1/projects/{projectId}/add-members": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "members",
+          "type": "array",
+          "items": {
+            "in": "formData",
+            "required": true,
+            "description": "ID of member that we want to add to project",
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Add new member to project",
+        "tags": [
+          "Project"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -919,6 +1017,65 @@
         },
         "detail": {
           "type": "string"
+        },
+        "createdAt": {
+          "type": "date-time"
+        },
+        "updatedAt": {
+          "type": "date-time"
+        }
+      }
+    },
+    "ProjectUpdate": {
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "title": {
+          "type": "string",
+          "required": true
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "remark": {
+          "type": "string"
+        },
+        "seen": {
+          "type": "boolean"
+        },
+        "project": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "pushedBy": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "status": {
+          "type": "array",
+          "items": [
+            {
+              "rate": {
+                "type": "number",
+                "required": true
+              }
+            }
+          ]
         },
         "createdAt": {
           "type": "date-time"
