@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express"
+import { Router, Request, Response, NextFunction } from "express"
 import userRoutes from "../components/user/routes/api.route"
 import DesignationRoutes from "../components/designation/routes/api.routes"
 import ProjectTypeRoutes from "../components/projectTypes/routes/api.route"
@@ -6,7 +6,7 @@ import ProjectRoutes from "../components/project/routes/api.route"
 import ProjectUpdateRoutes from "../components/projectUpdate/routes/api.route"
 import ProjectStatusRoutes from "../components/projectStatus/routes/api.route"
 import PasswordResetRoutes from "../components/password/routes/api.route"
-import passport from "passport"
+import PassportAuthenticate from "../middleware/passportAuthentication"
 
 class BaseRoutes {
 
@@ -21,14 +21,14 @@ class BaseRoutes {
     private initializeBaseRoutes() 
     {
         this.route.get("/", (req: Request, res: Response) => {
-            res.send("welcome to API")
+            res.send("welcome to Fuse Bulletin API")
         })
         
         // Password Reset link
         this._route.use("/", new PasswordResetRoutes().route)
 
         // Check authorization
-        this._route.use(passport.authenticate('bearer', { session: false }))
+        this._route.use(PassportAuthenticate)
         
         this._route.use("/users", new userRoutes().route)
         this._route.use("/designations", new DesignationRoutes().route)

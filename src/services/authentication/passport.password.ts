@@ -9,7 +9,7 @@ import config from "../../config"
 import NotAuthenticatedException from "../../exceptions/NotAuthenticatedException"
 
 passport.serializeUser<any, any>((user, done) => {
-    done(undefined, user.id)
+    done(undefined, user)
 })
 
 passport.deserializeUser((id, done) => {

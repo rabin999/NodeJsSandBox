@@ -5,9 +5,12 @@ const projectUpdateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    tasks: [{
         type: String,
-        required: true
+        required: true 
+    }],
+    description: {
+        type: String
     },
     remark:{
         type: String

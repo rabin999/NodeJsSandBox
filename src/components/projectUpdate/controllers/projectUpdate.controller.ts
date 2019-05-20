@@ -84,13 +84,14 @@ class ProjectUpdateController {
 
         try {
 
-            const { title, description, remark, project } = req.body
+            const { title, description, remark, project, tasks } = req.body
 
             const newUpdate = await ProjectUpdate.create({
                 title,
                 description,
                 remark,
-                project, 
+                project,
+                tasks: tasks,
                 pushedBy: req.user._id
             })
 
@@ -158,11 +159,12 @@ class ProjectUpdateController {
                 findCondition = { _id: mongoose.Types.ObjectId(req.params.id), }
             }
 
-            const { title, description, remark, project } = req.body
+            const { title, description, remark, tasks } = req.body
             const updated = await ProjectUpdate.findByIdAndUpdate( findCondition, {
                 title,
                 description,
-                remark
+                remark,
+                tasks
             })
 
             if (!updated) {

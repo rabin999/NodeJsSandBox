@@ -1,0 +1,932 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Fuse Bulletin API",
+    "description": "Fuse Bulletin API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "35.163.116.73:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Get Access token for user"
+    },
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    },
+    {
+      "name": "Designations",
+      "description": "User designations"
+    },
+    {
+      "name": "Project Type"
+    },
+    {
+      "name": "Project",
+      "description": "API for project in the system"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/oauth/access-token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "description": "Get user new access token",
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "formData",
+            "required": true,
+            "default": "password"
+          },
+          {
+            "name": "client_id",
+            "in": "formData",
+            "default": 1,
+            "required": true
+          },
+          {
+            "name": "client_secret",
+            "in": "formData",
+            "required": true,
+            "default": "ashdfjhasdlkjfhalksdjhflak"
+          },
+          {
+            "name": "username",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "scope",
+            "in": "formData",
+            "default": "*",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "New Access token is geneated",
+            "schema": {
+              "$ref": "#/definitions/AccessToken"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "default": "Bearer *token*",
+            "schema": {
+              "type": "string",
+              "$ref": "#/definitions/User"
+            },
+            "required": true
+          }
+        ],
+        "summary": "Get all users in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/create": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "fullname",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "designation",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "confirmPassword",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer",
+            "schema": {
+              "type": "string",
+              "$ref": "#/definitions/User"
+            },
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "New user is created",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{userId}/update": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "ID of user that we want to find",
+          "type": "string"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Update user in system",
+        "parameters": [
+          {
+            "name": "fullname",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "designation",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "confirmPassword",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User is updated",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{userId}/delete": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "ID of user that we want to find",
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Delete User",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User is deleted",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/profile": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user detail",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{userId}/profilePicture": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "ID of user that we want to find",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user profile picture",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{userId}/uploadProfile": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "formData",
+            "type": "file",
+            "description": "Select image that you want to upload",
+            "required": true
+          }
+        ],
+        "description": "Upload user profile picture",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/designations": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Designations"
+        ],
+        "summary": "Get all designations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Designation"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/designations/create": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": [
+          "Designations"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "summary": "Add new designations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Designation"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/designations/{Id}/delete": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Designations"
+        ],
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Designation id which you want to delete",
+            "required": true
+          }
+        ],
+        "summary": "Delete a designations",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/project-types": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Project Type"
+        ],
+        "summary": "Get all project types",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Designation"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/project-types/create": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": [
+          "Project Type"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "summary": "Add new Project Type",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Designation"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/project-types/{Id}/delete": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Project Type"
+        ],
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Project type id which you want to delete",
+            "required": true
+          }
+        ],
+        "summary": "Delete a designations",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/projects": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "default": "Bearer *token*",
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Get all projects in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/create": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "description": "Create new project",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "name": "members",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "owners",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "projectType",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "endData",
+            "in": "formData"
+          },
+          {
+            "name": "detail",
+            "in": "formData"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "New project is created",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/update": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "description": "ID of project that we want to find",
+          "type": "string"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "description": "Update project in system",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "description",
+            "in": "formData"
+          },
+          {
+            "name": "members",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "owners",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "projectType",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "endData",
+            "in": "formData"
+          },
+          {
+            "name": "detail",
+            "in": "formData"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User is updated",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/delete": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "description": "ID of project that we want to find",
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "description": "Delete Project",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{projectId}/members": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Bearer",
+          "required": true
+        },
+        {
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "description": "ID of project that we want to find it's members",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Fetch all project members",
+        "tags": [
+          "Project"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AccessToken": {
+      "required": [
+        "access_token",
+        "expires_at",
+        "scopes",
+        "token_type"
+      ],
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "data-time"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_type": {
+          "type": "string"
+        }
+      }
+    },
+    "Designation": {
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "data-time"
+        },
+        "updatedAt": {
+          "type": "data-time"
+        }
+      }
+    },
+    "User": {
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "fullname": {
+          "type": "string",
+          "required": true
+        },
+        "email": {
+          "type": "string",
+          "required": true,
+          "uniqueItems": true
+        },
+        "image": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "required": true
+        },
+        "passwordResetToken": {
+          "type": "string"
+        },
+        "passwordResetExpiresAt": {
+          "type": "data-time"
+        },
+        "token": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string"
+            },
+            "refreshToken": {
+              "type": "string"
+            },
+            "expiresAt": {
+              "type": "data-time"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "role": {
+          "type": "string",
+          "required": true
+        },
+        "designation": {
+          "type": "number",
+          "required": true
+        },
+        "createdAt": {
+          "type": "date-time"
+        },
+        "updatedAt": {
+          "type": "date-time"
+        }
+      }
+    },
+    "Project": {
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "title": {
+          "type": "string",
+          "required": true
+        },
+        "logo": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "projectType": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "date-time"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "date-time"
+        },
+        "updatedAt": {
+          "type": "date-time"
+        }
+      }
+    }
+  }
+}

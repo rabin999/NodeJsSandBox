@@ -6,8 +6,6 @@ import ProjectType from "../../components/projectTypes/model/projectType.model"
 import User from "../../components/user/model/user.model"
 import Project from "../../components/project/model/project.model"
 
-mongoose.plugin(require("@lykmapipo/mongoose-faker"))
-
 class Seeder {
     constructor () {
         this.connectToDatabase()

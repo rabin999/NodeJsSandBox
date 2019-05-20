@@ -14,6 +14,8 @@ import Routes from "./routes/v1"
 import errorMiddleware from "./middleware/error.middleware"
 import "./services/authentication/passport.password"
 import GenerateAccessToken from "./services/authentication/passport.geneateToken"
+import swaggerUI from "swagger-ui-express"
+import swaggerJSON from "../documentation/swagger.json"
 
 class App {
     
@@ -89,6 +91,7 @@ class App {
      */
     private initializeRoutes() 
     {
+        this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJSON))
         this.app.post("/oauth/access-token", GenerateAccessToken)
         this.app.use("/api/v1", this.routes)
     }

@@ -16,7 +16,7 @@ class UserController {
     /**
      * GET /users
      * Get all users
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -39,7 +39,7 @@ class UserController {
     /**
      * GET /users/:id/profile
      * Get user profile picture
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -63,7 +63,7 @@ class UserController {
     /**
      * GET /users/:id/profilePicture
      * Get user profile picture
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -83,7 +83,7 @@ class UserController {
             }
 
             const UPLOAD_PATH = path.resolve(config.upload.user.dest + "/" + userId)
-            
+
             // Image file not found
             if (!fs.existsSync(path.join(UPLOAD_PATH, profile.image))) {
                 const err = new HttpException({
@@ -112,7 +112,7 @@ class UserController {
     /**
      * POST /signup
      * Create a new user account
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -152,20 +152,20 @@ class UserController {
     /**
      * POST /id/upload-profile
      * Upload user profile picture
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
      */
     public uploadProfile = async (req: Request, res: Response, next: NextFunction) => {
-        
+
         if (req.user.role !== "admin" && req.user._id !== req.params.id) {
             const error = new NotAuthorized()
             return res.status(403).json(error.parse())
         }
 
         try {
-            
+
             const userId = req.params.id
             let imageName = ""
             const uploadDir = path.resolve(config.upload.user.dest + "/" + userId)
@@ -177,6 +177,7 @@ class UserController {
                 fs.mkdirSync(uploadDir, { recursive: true })
             }
 
+            // if already user image exist, remove
             if (user.image && fs.existsSync(path.join(uploadDir, user.image))) {
                 fs.unlinkSync(path.join(uploadDir, user.image))
             }
@@ -213,7 +214,7 @@ class UserController {
                     })
                     return res.status(500).json(err.parse())
                 }
-                
+
                 if (!req.file) {
                     const err = new HttpException({
                         status: 404,
@@ -241,7 +242,7 @@ class UserController {
     /**
      * PUT /id/update
      * Update member account
-     * 
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -292,8 +293,8 @@ class UserController {
 
     /**
      * DELETE /id/delete
-     * Delete user account 
-     * 
+     * Delete user account
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next

@@ -13,7 +13,7 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
 
     // Role
     req.assert("role").notEmpty().withMessage("Role is required")
-            .isIn(["admin", "projectManager", "client"]).withMessage("Given role is not valid.")
+            .isIn(["admin", "projectManager", "client", "member"]).withMessage("Given role is not valid.")
 
     // Email
     req.assert("email", "Email is not valid").isEmail()
