@@ -5,6 +5,7 @@ class NotAuthorizedException extends HttpException {
     {
         super({
             status: 403,
+            title: "Unauthorized",
             message: "You are not authorized"
         })
     }

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../exceptions/HttpException"
+import NotAuthorized from "../exceptions/NotAuthorizedException"
 import passport from "passport"
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
@@ -15,11 +16,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
         //authentication error
         if (!user) {
             const error_description = info.split("error_description=") ? info.split("error_description=")[1] : "Invalid Token"
-    
-            const error = new HttpException({
-                status: 401,
-                message: error_description
-            })
+            const error = new NotAuthorized()
             return res.status(401).json(error.parse())
         }
     
