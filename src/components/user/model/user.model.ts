@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    fireBaseToken: {
+        type: String
+    },
     passwordResetToken: String,
     passwordResetExpiresAt: Date,
     token: {

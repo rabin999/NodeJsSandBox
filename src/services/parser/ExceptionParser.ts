@@ -42,7 +42,7 @@ class ExceptionParser implements ExceptionParserInterface {
 
     isMessageIterable(): boolean
     {
-        return typeof this.errors.message[Symbol.iterator] === "function"
+        return this.errors.message && typeof this.errors.message[Symbol.iterator] === "function"
     }
 }
 

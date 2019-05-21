@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from "express"
-import ProjectUpdate  from "../model/projectUpdate.model"
+import ProjectUpdate from "../model/projectUpdate.model"
 import HttpException from "../../../exceptions/HttpException"
 import ProjectUpdateNotFound from "../../../exceptions/ProjectUpdateNotFoundException"
 import mongoose from "mongoose"
+import * as firebaseAdmin from "firebase-admin"
+import User from "../../user/model/user.model"
+import Project from "../../project/model/project.model"
+import { pluck } from "../../../services/parser/Pluck"
+import serviceAccount from "../../../../fuse-bulletin-7e087-firebase-adminsdk-h8k1f-c1a5791a9d.json"
 
 class ProjectUpdateController {
 
@@ -19,7 +24,7 @@ class ProjectUpdateController {
 
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy : req.user._id }
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id }
             } else {
                 findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
             }
@@ -36,20 +41,20 @@ class ProjectUpdateController {
         }
     }
 
-     /**
-     * GET project-updates/:projectId/filter/:month
-     * Get all project updates filter using month
-     * 
-     * @param  {Request} req
-     * @param  {Response} res
-     * @param  {NextFunction} next
-     */
+    /**
+    * GET project-updates/:projectId/filter/:month
+    * Get all project updates filter using month
+    * 
+    * @param  {Request} req
+    * @param  {Response} res
+    * @param  {NextFunction} next
+    */
     public filterProjectUpdate = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy : req.user._id, $month: req.params.month }
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id, $month: req.params.month }
             } else {
                 findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), $month: req.params.month }
             }
@@ -57,7 +62,7 @@ class ProjectUpdateController {
             // * working
             const updates = await ProjectUpdate.aggregate([
                 {
-                    $match: findCondition 
+                    $match: findCondition
                 }
             ]).exec()
 
@@ -72,6 +77,37 @@ class ProjectUpdateController {
         }
     }
 
+    /**
+     * Send Notification to clients
+     * 
+     * @param  {string} token
+     * @param  {any} option
+     */
+    public sendNotification = async (tokens: string[], option: any) => {
+
+        if (!tokens.length) {
+            throw new Error("Firebase token not found.")
+        }
+
+        // setup firebase admin
+        firebaseAdmin.initializeApp({
+            credential: firebaseAdmin.credential.cert(serviceAccount),
+            databaseURL: "https://fuse-bulletin-7e087.firebaseio.com"
+        })
+
+        const payload = {
+            notification: {
+                title: option.title,
+                body: option.body
+            },
+            tokens
+        }
+            
+        // send notification
+        const firebaseReponse = await firebaseAdmin.messaging().sendMulticast(payload)
+        return firebaseReponse
+    }
+    
     /**
      * POST /project-updates/create
      * Create a new project update
@@ -94,6 +130,26 @@ class ProjectUpdateController {
                 tasks: tasks,
                 pushedBy: req.user._id
             })
+
+            let userIds= await Project.findById(project).select("owners").lean().exec()
+
+            if (userIds && userIds.owners) {
+
+                // get all project owners
+                userIds = userIds.owners.map((ownerId: string | number) => mongoose.Types.ObjectId(ownerId))
+                let fireBaseTokens = await User.find({
+                    '_id': { $in: userIds }
+                }).select("fireBaseToken -_id").lean().exec()
+
+                // pluck fireBaseToken from reponse
+                const tokens = pluck(fireBaseTokens, "fireBaseToken")
+
+                // send notification
+                this.sendNotification(tokens, {
+                    title,
+                    body: description
+                }) 
+            }
 
             return res.status(201).json({
                 message: `Project Update ${newUpdate.title} created successfully.`
@@ -119,7 +175,7 @@ class ProjectUpdateController {
     public updateSeen = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const updated = await ProjectUpdate.findByIdAndUpdate( req.params.id, {
+            const updated = await ProjectUpdate.findByIdAndUpdate(req.params.id, {
                 seen: true
             })
 
@@ -140,7 +196,7 @@ class ProjectUpdateController {
             res.status(500).json(err.parse())
         }
     }
-    
+
     /**
      * PUT /project-update/id/update
      * Update projectUpdate
@@ -151,16 +207,16 @@ class ProjectUpdateController {
      */
     public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            
+
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy : req.user._id }
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy: req.user._id }
             } else {
                 findCondition = { _id: mongoose.Types.ObjectId(req.params.id), }
             }
 
             const { title, description, remark, tasks } = req.body
-            const updated = await ProjectUpdate.findByIdAndUpdate( findCondition, {
+            const updated = await ProjectUpdate.findByIdAndUpdate(findCondition, {
                 title,
                 description,
                 remark,
@@ -198,7 +254,7 @@ class ProjectUpdateController {
 
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy : req.user._id }
+                findCondition = { _id: mongoose.Types.ObjectId(req.params.id), pushedBy: req.user._id }
             } else {
                 findCondition = { _id: mongoose.Types.ObjectId(req.params.id), }
             }

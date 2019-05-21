@@ -12,6 +12,7 @@ class ProjectUpdateRoutes {
     {
         this._route = Router()
 
+        this._route.post("/sendNotification", RoleMiddleware(["admin", "projectManager"]), new ProjectUpdateController().sendNotification)
         this._route.get("/:projectId", RoleMiddleware(["admin", "projectManager"]), new ProjectUpdateController().projectUpdates)
         this._route.get("/:projectId/filter/:month", RoleMiddleware(["admin", "projectManager", "client"]), new ProjectUpdateController().filterProjectUpdate)
         this._route.post("/create", RoleMiddleware(["admin", "projectManager"]), ProjectUpdateRequest, new ProjectUpdateController().create)

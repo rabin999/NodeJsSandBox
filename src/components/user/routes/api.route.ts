@@ -17,6 +17,7 @@ class UserRoutes {
         this._route.get("/profile", new UserController().profile)
         this._route.post("/signup", RoleMiddleware(["admin"]), SignUpRequest, new UserController().create)
         this._route.post("/:id/uploadProfile", new UserController().uploadProfile)
+        this._route.post("/profile/addFireBaseToken", new UserController().addFireBaseToken)
         this._route.put("/:id/update", UpdateRequest, new UserController().update)
         this._route.delete("/:id/delete", RoleMiddleware(["admin"]), new UserController().delete)
     }

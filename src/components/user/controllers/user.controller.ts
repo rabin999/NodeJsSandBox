@@ -247,6 +247,38 @@ class UserController {
      * @param  {Response} res
      * @param  {NextFunction} next
      */
+    public addFireBaseToken = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            const { token } = req.body.token
+            if (!token) {
+                const err = new HttpException({
+                    status: 422,
+                    message: "Firebase token not found."
+                })
+                return res.status(422).json(err.parse())
+            }
+
+            const user = await User.findByIdAndUpdate(req.user._id, { fireBaseToken: token }, { upsert: true })
+            return res.json({ message: `Firebase Token id ${token} added to user ${req.user.fullname} successfully` })
+
+        } catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * PUT /id/update
+     * Update member account
+     *
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
     public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
 

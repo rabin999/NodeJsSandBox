@@ -320,17 +320,16 @@ class ProjectController {
      */
     public addMembers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-
             const ids: string = req.body.members
             const idsExists = Array.from(ids).filter(i => !!i.length)
 
             if (!idsExists.length) {
                 throw new Error("Member shouldn't be empty.")
             }
-
+            
             let membersId = typeof req.body.members === "string" ? [mongoose.Types.ObjectId(ids)] :
                                     Array.from(ids).map(id => mongoose.Types.ObjectId(id))
-        
+
             const updateProject = await Project.findOneAndUpdate(
                 {
                     _id: mongoose.Types.ObjectId(req.params.id),

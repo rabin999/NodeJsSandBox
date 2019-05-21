@@ -9,8 +9,6 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "35.163.116.73:3000",
-  "basePath": "/",
   "tags": [
     {
       "name": "Authentication",
@@ -844,21 +842,34 @@
           "name": "Authorization",
           "in": "header",
           "description": "Bearer",
+          "default": "Bearer ****",
           "required": true
         },
         {
-          "name": "members",
-          "type": "array",
-          "items": {
-            "in": "formData",
-            "required": true,
-            "description": "ID of member that we want to add to project",
-            "type": "string"
-          }
+          "name": "projectId",
+          "in": "path",
+          "required": true,
+          "description": "Project Id",
+          "type": "string"
         }
       ],
-      "post": {
+      "put": {
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
         "summary": "Add new member to project",
+        "parameters": [
+          {
+            "name": "members",
+            "type": "array",
+            "in": "formData",
+            "items": {
+              "required": true,
+              "description": "ID of member that we want to add to project",
+              "type": "string"
+            }
+          }
+        ],
         "tags": [
           "Project"
         ],
@@ -1067,15 +1078,20 @@
           }
         },
         "status": {
-          "type": "array",
-          "items": [
-            {
-              "rate": {
-                "type": "number",
-                "required": true
-              }
+          "type": "object",
+          "properties": {
+            "rate": {
+              "type": "number",
+              "required": true
+            },
+            "ratedBy": {
+              "type": "string",
+              "required": true
+            },
+            "ratedAt": {
+              "type": "date-time"
             }
-          ]
+          }
         },
         "createdAt": {
           "type": "date-time"
