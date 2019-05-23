@@ -45,11 +45,12 @@ class ProjectController {
 
             // for ses
             if (config.ses_service) {
-                aws.config.loadFromPath(path.resolve("config/ses.json"))
+                aws.config.loadFromPath(path.resolve("/home/ubuntu/Fusemachines-fuse-bulletin/dist/components/password/controllers/config/ses.json"))
                 transporter = nodemailer.createTransport({
                     SES: new aws.SES({
                         apiVersion: '2010-12-01'
-                    })
+                    }),
+                    logger: true
                 })
             } else {
                 transporter = nodemailer.createTransport({
@@ -64,7 +65,7 @@ class ProjectController {
 
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: `"Fuse Bulletin" <${config.email.gmail.username}>`, // sender address
+                from: `"${config.app_name}" <${config.ses_service.enabled ? config.ses_service.from : config.email.gmail.username}>`, // sender address
                 to: mail, // list of receivers
                 subject: "Request for password reset", // Subject line
                 text: `Click here to reset your password ${link}.This token will be expire after 24 hours, Thank you !`

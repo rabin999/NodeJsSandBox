@@ -9,7 +9,7 @@ dotenv.config({ path: path.resolve(".env") })
 const config = {
 
     // APPLICATION HOST
-    app_host : process.env.HOST || "https://example.com",
+    app_host : process.env.HOST || "http://35.163.116.73",
 
     // APPLICATION NAME
     app_name: process.env.APP_NAME || "Fuse Bulletin",
@@ -41,7 +41,10 @@ const config = {
 
     session_secret : process.env.SESSION_SECRET || "ashdfjhasdlkjfhalksdjhflak",
     client_secret : process.env.CLIENT_SECRET || "ashdfjhasdlkjfhalksdjhflak",
-    ses_service : process.env.SES_SERVICE || true,
+    ses_service: {
+        enabled: process.env.SES_SERVICE || true,
+        from : "developer@fusemachines.com"
+    },
     /**
      * IMAGE UPLOAD
      * ------------
@@ -71,8 +74,8 @@ const config = {
     email: {
         gmail: {
             provider: "Gmail",
-            username: "baakhapaa@gmail.com",
-            password: "linuxislife",
+            username: "developer@fusemachines.com",
+            password: "developer2019",
         }
     },
 
