@@ -39,29 +39,32 @@ class ProjectController {
             const resetTokenExpiresAt = moment().add(24, 'hours')
             const link = config.app_host + ":" + config.port + "/resetPassword/" + resetToken
 
+
             // Send Message
-            let transporter = nodemailer.createTransport({
-                service: config.email.gmail.provider,
-                auth: {
-                    user: config.email.gmail.username,
-                    pass: config.email.gmail.password
-                },
-                logger: true
-            })
+            let transporter
 
             // for ses
-            if (false) {
+            if (config.ses_service) {
                 aws.config.loadFromPath(path.resolve("config/ses.json"))
                 transporter = nodemailer.createTransport({
                     SES: new aws.SES({
                         apiVersion: '2010-12-01'
                     })
                 })
+            } else {
+                transporter = nodemailer.createTransport({
+                    service: config.email.gmail.provider,
+                    auth: {
+                        user: config.email.gmail.username,
+                        pass: config.email.gmail.password
+                    },
+                    logger: true
+                })
             }
 
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: `"Fred Foo 👻" <${config.email.gmail.username}>`, // sender address
+                from: `"Fuse Bulletin" <${config.email.gmail.username}>`, // sender address
                 to: mail, // list of receivers
                 subject: "Request for password reset", // Subject line
                 text: `Click here to reset your password ${link}.This token will be expire after 24 hours, Thank you !`

@@ -41,7 +41,7 @@ const config = {
 
     session_secret : process.env.SESSION_SECRET || "ashdfjhasdlkjfhalksdjhflak",
     client_secret : process.env.CLIENT_SECRET || "ashdfjhasdlkjfhalksdjhflak",
-
+    ses_service : process.env.SES_SERVICE || true,
     /**
      * IMAGE UPLOAD
      * ------------
