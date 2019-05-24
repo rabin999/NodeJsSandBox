@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import User from "../../user/model/user.model"
 
 const projectUpdateSchema = new mongoose.Schema({
     title: {
@@ -50,5 +51,15 @@ const projectUpdateSchema = new mongoose.Schema({
     timestamps: true
 })
 
+projectUpdateSchema.statics.getUserUpdateRate = function(userId: string) {
+    return projectUpdateSchema.virtual("updateRate", {
+        ref: "user",
+        localField: "status.ratedBy",
+        foreignField: "_id",
+        options: {
+            match: { _id: mongoose.Types.ObjectId(userId) }
+        }
+    })
+}
 
 export default mongoose.model("projectUpdate", projectUpdateSchema)

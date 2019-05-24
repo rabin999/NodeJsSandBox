@@ -75,22 +75,51 @@ class ProjectUpdateController {
     */
     public filterProjectUpdate = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            
+            const date = new Date(),
+                y = date.getFullYear(),
+                m = date.getMonth();
+            const firstDay = new Date(y, m, req.params.month);
+            const lastDay = new Date(y, m + req.params.month, 0);
+
+            console.log(firstDay)
+            console.log(lastDay)
+            return res.send("est")
 
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id, $month: req.params.month }
-            } else {
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), $month: req.params.month }
+                findCondition = { 
+                    project: mongoose.Types.ObjectId(req.params.projectId), 
+                    pushedBy: req.user._id,
+                    createdAt: {
+                        $gt: firstDay,
+                        $lt: lastDay
+                    }
+                }
+            } 
+            else if(req.user.role === "admin") {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
+            }
+            else if(req.user.role === "client") {
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
+            } 
+            else {
+                const err = new NotAuthorized()
+                return res.status(500).json(err.parse())
             }
 
-            // * working
-            const updates = await ProjectUpdate.aggregate([
-                {
-                    $match: findCondition
+            const updates = await ProjectUpdate.find(findCondition, 
+                { 
+                    tasks: { $slice: -1 }, 
+                    status: { 
+                        $elemMatch: { ratedBy: mongoose.Types.ObjectId(req.user._id) } 
+                    } 
                 }
-            ]).exec()
-
-            return res.json(updates)
+                ).select("-__v").lean().exec()
+                
+            return res.json({
+                data: updates
+            })
         }
         catch (error) {
             const err = new HttpException({
@@ -103,7 +132,7 @@ class ProjectUpdateController {
 
     /**
     * GET project-updates/:id/details
-    * Get all project updates filter using month
+    * Get project update detail
     * 
     * @param  {Request} req
     * @param  {Response} res
@@ -112,20 +141,38 @@ class ProjectUpdateController {
    public detail = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const updates = await ProjectUpdate.findById(req.params.id).populate({
+        let updates = await ProjectUpdate.findById(req.params.id).select(["-__v"])
+                        .populate({
                             path: "status.ratedBy",
                             model: "user",
-                            select: ["fullname", "role", "designation"],
+                            select: ["fullname", "designation"],
                             populate: {
                                 path: "designation",
                                 model: "designation",
                                 select: ["title"]
                             }
                         }).lean().exec()
-
-        return res.json({
-            data: updates
+        
+        let userRate =  await ProjectUpdate.find({
+                            _id: mongoose.Types.ObjectId(req.params.id),
+                            "status.ratedBy": req.user._id
+                        }).select("status").lean().exec()            
+                    
+        const newUserRate = userRate[0].status.filter((rate: any) => {
+            return rate.ratedBy.toString() == req.user._id.toString()
         })
+
+        const format = {
+            projectStatus: {
+                title: updates.title,
+                tasks: updates.tasks
+            },
+            updateRate: newUserRate[0].rate,
+            status: updates.status
+        }
+
+        res.send(format)
+
     }
     catch (error) {
         const err = new HttpException({

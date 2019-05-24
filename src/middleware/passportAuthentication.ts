@@ -12,10 +12,10 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
             })
             return res.status(401).json(error.parse())
         }
-    
+        
         //authentication error
         if (!user) {
-            const error_description = info.split("error_description=") ? info.split("error_description=")[1] : "Invalid Token"
+            // const error_description = info ? info.split("error_description=") ? info.split("error_description=")[1] : "Invalid Token" : "Invalid Token"
             const error = new NotAuthorized()
             return res.status(401).json(error.parse())
         }
