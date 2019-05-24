@@ -7,6 +7,7 @@ import ProjectUpdateRoutes from "../components/projectUpdate/routes/api.route"
 import ProjectStatusRoutes from "../components/projectStatus/routes/api.route"
 import PasswordResetRoutes from "../components/password/routes/api.route"
 import PassportAuthenticate from "../middleware/passportAuthentication"
+import NotificationRoutes from "../components/notification/routes/api.route"
 
 class BaseRoutes {
 
@@ -36,6 +37,7 @@ class BaseRoutes {
         this._route.use("/projects", new ProjectRoutes().route)
         this._route.use("/project-updates", new ProjectUpdateRoutes().route)
         this._route.use("/project-status", new ProjectStatusRoutes().route)
+        this._route.use("/notifications", new NotificationRoutes().route)
     }
 
     get route()

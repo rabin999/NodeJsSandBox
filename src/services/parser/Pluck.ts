@@ -1,9 +1,9 @@
-export const pluck = (array: string[], key: string): string[] => {
+export const pluck = (array: string[], key: string, spread: boolean = false): string[] => {
     let values: string[] = []
     if (array.length) {
         array.forEach((value: any) => {
-            if ( value[`${key}`] && values.indexOf(value[`${key}`]) == -1 ) {
-                values.push(value[`${key}`])
+            if ( value[`${key}`].length && values.indexOf(value[`${key}`]) == -1) {
+                spread ? values.push(...value[`${key}`]) : values.push(value[`${key}`])
             }
         })
     }

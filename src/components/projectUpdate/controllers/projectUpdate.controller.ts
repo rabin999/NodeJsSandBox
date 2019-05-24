@@ -10,6 +10,7 @@ import Project from "../../project/model/project.model"
 import { pluck } from "../../../services/parser/Pluck"
 // @ts-ignore: Resolve json module
 import serviceAccount from "../../../../fuse-bulletin-7e087-firebase-adminsdk-h8k1f-c1a5791a9d.json"
+import NotificationController from "../../notification/controllers/notification.controller"
 
 class ProjectUpdateController {
 
@@ -26,24 +27,31 @@ class ProjectUpdateController {
 
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id }
+                findCondition = { 
+                    project: mongoose.Types.ObjectId(req.params.projectId), 
+                    pushedBy: req.user._id
+                }
             } 
             else if(req.user.role === "admin") {
                 findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
             }
             else if(req.user.role === "client") {
-                // * check client involved in this project is not
-                const isProjectClient = Project.findById(req.params.id)
-                return res.send(isProjectClient);
-
-                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id }
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
             } 
             else {
                 const err = new NotAuthorized()
                 return res.status(500).json(err.parse())
             }
 
-            const updates = await ProjectUpdate.find(findCondition, { tasks: { $slice: -1 } }).select("-__v").lean().exec()
+            const updates = await ProjectUpdate.find(findCondition, 
+                { 
+                    tasks: { $slice: -1 }, 
+                    status: { 
+                        $elemMatch: { ratedBy: mongoose.Types.ObjectId(req.user._id) } 
+                    } 
+                }
+                ).select("-__v").lean().exec()
+                
             return res.json({
                 data: updates
             })
@@ -94,12 +102,47 @@ class ProjectUpdateController {
     }
 
     /**
+    * GET project-updates/:id/details
+    * Get all project updates filter using month
+    * 
+    * @param  {Request} req
+    * @param  {Response} res
+    * @param  {NextFunction} next
+    */
+   public detail = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const updates = await ProjectUpdate.findById(req.params.id).populate({
+                            path: "status.ratedBy",
+                            model: "user",
+                            select: ["fullname", "role", "designation"],
+                            populate: {
+                                path: "designation",
+                                model: "designation",
+                                select: ["title"]
+                            }
+                        }).lean().exec()
+
+        return res.json({
+            data: updates
+        })
+    }
+    catch (error) {
+        const err = new HttpException({
+            status: 500,
+            message: error.toString()
+        })
+        res.status(500).json(err.parse())
+    }
+}
+
+    /**
      * Send Notification to clients
      * 
      * @param  {string} token
      * @param  {any} option
      */
-    public sendNotification = async (tokens: string[], option: any) => {
+    public sendNotificationAndSave = async (tokens: string[], option: any) => {
 
         if (!tokens.length) {
             throw new Error("Firebase token not found.")
@@ -114,13 +157,26 @@ class ProjectUpdateController {
         const payload = {
             notification: {
                 title: option.title,
-                body: option.body
+                projectUpdateId: option.projectUpdateId,
+                type: option.type,
+                description: option.description,
             },
             tokens
-        }
+        }   
             
         // send notification
         const firebaseReponse = await firebaseAdmin.messaging().sendMulticast(payload)
+        
+        // saving notification
+        await new NotificationController().save({
+            title: option.title,
+            projectUpdateId: option.projectUpdateId,
+            type: option.type,
+            description: option.description,
+            tokens
+        })
+        
+        // saving token
         return firebaseReponse
     }
     
@@ -133,7 +189,6 @@ class ProjectUpdateController {
      * @param  {NextFunction} next
      */
     public create = async (req: Request, res: Response, next: NextFunction) => {
-
         try {
 
             const { title, description, remark, project, tasks } = req.body
@@ -147,24 +202,28 @@ class ProjectUpdateController {
                 pushedBy: req.user._id
             })
 
+            // get project owners to send notification
             let userIds= await Project.findById(project).select("owners").lean().exec()
-
             if (userIds && userIds.owners) {
 
-                // get all project owners
+                // all project owners
                 userIds = userIds.owners.map((ownerId: string | number) => mongoose.Types.ObjectId(ownerId))
                 let fireBaseTokens = await User.find({
                     '_id': { $in: userIds }
                 }).select("fireBaseToken -_id").lean().exec()
 
                 // pluck fireBaseToken from reponse
-                const tokens = pluck(fireBaseTokens, "fireBaseToken")
+                const tokens = pluck(fireBaseTokens, "fireBaseToken", true)
 
-                // send notification
-                this.sendNotification(tokens, {
+                const payload = {
                     title,
-                    body: description
-                }) 
+                    projectUpdateId: newUpdate._id,
+                    type: "update",
+                    description
+                }
+
+                // // send notification
+                this.sendNotificationAndSave(tokens, payload)
             }
 
             return res.status(201).json({

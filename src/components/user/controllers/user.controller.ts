@@ -47,7 +47,7 @@ class UserController {
     public profile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.params.id
-            const user = await User.findById(req.user._id).lean().exec()
+            const user = await User.findById(req.user._id).lean().populate("designation").exec()
 
             res.send(user)
         }
@@ -74,7 +74,7 @@ class UserController {
             const profile = await User.findById(userId).select("image -_id").lean().exec()
 
             // Image not found
-            if (!profile.image) {
+            if (!profile) {
                 const err = new HttpException({
                     status: 404,
                     message: "Profile picture not found."
@@ -259,7 +259,9 @@ class UserController {
                 return res.status(422).json(err.parse())
             }
 
-            const user = await User.findByIdAndUpdate(req.user._id, { fireBaseToken: token }, { upsert: true })
+            const user = await User.findByIdAndUpdate(req.user._id, 
+                { $push: { fireBaseToken: token } },
+                { upsert: true })
             return res.json({ message: `Firebase Token id ${token} added to user ${req.user.fullname} successfully` })
 
         } catch (error) {

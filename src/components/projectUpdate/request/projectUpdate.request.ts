@@ -11,6 +11,9 @@ const validation = async (req: Request, res: Response, next: NextFunction) => {
     // Project update task
     req.assert("tasks").notEmpty().withMessage("Project update tasks is required")
 
+    // description
+    req.assert("description").notEmpty().withMessage("Project update description is required")
+
     // Project update's project
     req.assert("project").notEmpty().withMessage("Project ID is required")
 

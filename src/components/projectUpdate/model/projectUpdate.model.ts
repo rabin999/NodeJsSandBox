@@ -50,4 +50,5 @@ const projectUpdateSchema = new mongoose.Schema({
     timestamps: true
 })
 
+
 export default mongoose.model("projectUpdate", projectUpdateSchema)
