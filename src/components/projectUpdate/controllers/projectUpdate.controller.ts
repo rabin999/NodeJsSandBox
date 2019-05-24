@@ -157,17 +157,20 @@ class ProjectUpdateController {
                             _id: mongoose.Types.ObjectId(req.params.id),
                             "status.ratedBy": req.user._id
                         }).select("status").lean().exec()            
-                    
-        const newUserRate = userRate[0].status.filter((rate: any) => {
-            return rate.ratedBy.toString() == req.user._id.toString()
-        })
-
+        
+        let newUserRate: any = ''
+        if (userRate[0] && userRate[0].status) {
+            const newUserRate = userRate[0].status.filter((rate: any) => {
+                return rate.ratedBy.toString() == req.user._id.toString()
+            })
+        }
+        
         const format = {
             projectStatus: {
                 title: updates.title,
                 tasks: updates.tasks
             },
-            updateRate: newUserRate[0].rate,
+            updateRate: newUserRate ? newUserRate[0].rate : null,
             status: updates.status
         }
 
