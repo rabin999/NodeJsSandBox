@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from "express"
 import ProjectUpdate from "../model/projectUpdate.model"
 import HttpException from "../../../exceptions/HttpException"
+import NotAuthorized from "../../../exceptions/NotAuthorizedException"
 import ProjectUpdateNotFound from "../../../exceptions/ProjectUpdateNotFoundException"
 import mongoose from "mongoose"
 import * as firebaseAdmin from "firebase-admin"
 import User from "../../user/model/user.model"
 import Project from "../../project/model/project.model"
 import { pluck } from "../../../services/parser/Pluck"
+// @ts-ignore: Resolve json module
 import serviceAccount from "../../../../fuse-bulletin-7e087-firebase-adminsdk-h8k1f-c1a5791a9d.json"
 
 class ProjectUpdateController {
@@ -25,12 +27,26 @@ class ProjectUpdateController {
             let findCondition = {}
             if (req.user.role !== "admin" && req.user.role === "projectManager") {
                 findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id }
-            } else {
+            } 
+            else if(req.user.role === "admin") {
                 findCondition = { project: mongoose.Types.ObjectId(req.params.projectId) }
             }
+            else if(req.user.role === "client") {
+                // * check client involved in this project is not
+                const isProjectClient = Project.findById(req.params.id)
+                return res.send(isProjectClient);
 
-            const updates = await ProjectUpdate.find(findCondition).select("-__v").lean().exec()
-            return res.json(updates)
+                findCondition = { project: mongoose.Types.ObjectId(req.params.projectId), pushedBy: req.user._id }
+            } 
+            else {
+                const err = new NotAuthorized()
+                return res.status(500).json(err.parse())
+            }
+
+            const updates = await ProjectUpdate.find(findCondition, { tasks: { $slice: -1 } }).select("-__v").lean().exec()
+            return res.json({
+                data: updates
+            })
         }
         catch (error) {
             const err = new HttpException({

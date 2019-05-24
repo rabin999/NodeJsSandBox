@@ -64,6 +64,17 @@ class ProjectUpdateStatusController {
 
         try {
             const { rate } = req.body
+
+            // check user id exist on status or not
+            const userUpdateStatus = await ProjectUpdate.find({ "status.ratedBy": mongoose.Types.ObjectId(req.user._id) })
+            if (userUpdateStatus.length) {
+                const err = new HttpException({
+                    status: 500,
+                    message: `User ${req.user.fullname} status already exists`
+                })
+                return res.status(500).json(err.parse())
+            }
+
             const newProjectStatus = await ProjectUpdate.findByIdAndUpdate(req.params.projectUpdateId, {
                 $push: {
                     status: {
@@ -76,6 +87,41 @@ class ProjectUpdateStatusController {
             return res.status(201).json({
                 message: `Project Update status created successfully.`
             })
+        }
+        catch (error) {
+            const err = new HttpException({
+                status: 500,
+                message: error.toString()
+            })
+            res.status(500).json(err.parse())
+        }
+    }
+
+    /**
+     * PUT project-status/projectUpdateId/update
+     * update existing project update status
+     * 
+     * @param  {Request} req
+     * @param  {Response} res
+     * @param  {NextFunction} next
+     */
+    public update = async (req: Request, res: Response, next: NextFunction) => {
+
+        try {
+            const { rate } = req.body
+
+            const found = await ProjectUpdate.findOneAndUpdate(
+                { "status._id" : mongoose.Types.ObjectId(req.params.id), "status.ratedBy": mongoose.Types.ObjectId(req.user._id) }, {
+                $set: {
+                    "status.$.rate": rate
+                }
+            }, { upsert: true })
+            
+            if (found) {
+                return res.status(201).json({
+                    message: `Project Update status updated successfully.`
+                })
+            }
         }
         catch (error) {
             const err = new HttpException({

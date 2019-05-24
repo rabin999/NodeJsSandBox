@@ -5,7 +5,7 @@ import HttpException from "../../../exceptions/HttpException"
 const validation = async (req: Request, res: Response, next: NextFunction) => {
     
     // Project Status title
-    req.assert("rate").notEmpty().withMessage("Rating is required.")
+    req.assert("rate").notEmpty().withMessage("Rating is required.").isIn(["1", "2", "3"]).withMessage("Given rate is not valid.")
 
     // process errors
     const errors = req.validationErrors()

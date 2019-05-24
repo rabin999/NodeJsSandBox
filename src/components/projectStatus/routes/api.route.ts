@@ -13,7 +13,8 @@ class ProjectStatusRoutes {
 
         this._route.get("/:projectUpdateId", new ProjectUpdateStatusController().projectUpdateStatus)
         this._route.post("/:projectUpdateId/create", RoleMiddleware(["projectManager", "client"]), ProjectUpdateStatus, new ProjectUpdateStatusController().create)
-        this._route.delete("/:id/delete", RoleMiddleware(["projectManager"]), new ProjectUpdateStatusController().delete)
+        this._route.put("/:id/update", RoleMiddleware(["projectManager", "client"]), new ProjectUpdateStatusController().update)
+        this._route.delete("/:id/delete", RoleMiddleware(["projectManager", "client"]), new ProjectUpdateStatusController().delete)
     }
 
     get route()

@@ -33,7 +33,7 @@ const projectUpdateSchema = new mongoose.Schema({
     status: [{
         rate: {
             type: Number,
-            enum: [1, 2, 3, 4, 5],
+            enum: [1, 2, 3],
             required: true
         },
         ratedBy: {
