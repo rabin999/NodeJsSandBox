@@ -5,24 +5,23 @@ import passport from "passport"
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('bearer', {session: false}, function(err, user, info) {
-        if (err) { 
+        if (err) {
             const error = new HttpException({
                 status: 401,
                 message: err.toString()
             })
             return res.status(401).json(error.parse())
         }
-        
+
         //authentication error
         if (!user) {
-            // const error_description = info ? info.split("error_description=") ? info.split("error_description=")[1] : "Invalid Token" : "Invalid Token"
             const error = new NotAuthorized()
             return res.status(401).json(error.parse())
         }
-    
-        //success 
+
+        //success
         req.login(user, function(err) {
-            if (err) { 
+            if (err) {
                 const error = new HttpException({
                     status: 500,
                     message: err.toString()
@@ -32,7 +31,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
 
           return next();
         });
-    
+
     })(req, res, next)
 }
 

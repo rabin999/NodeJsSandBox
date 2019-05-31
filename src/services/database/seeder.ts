@@ -1,10 +1,7 @@
 import bluebird from "bluebird"
 import mongoose from "mongoose"
 import config from "../../config"
-import Designation from "../../components/designation/model/designation.model"
-import ProjectType from "../../components/projectTypes/model/projectType.model"
-import User from "../../components/user/model/user.model"
-import Project from "../../components/project/model/project.model"
+import Dashboard from "../../components/dashboard/model/dashboard.model"
 
 class Seeder {
     constructor () {
@@ -14,13 +11,13 @@ class Seeder {
     /**
      * Connect to MongoDB
      */
-    public connectToDatabase() 
+    public connectToDatabase()
     {
         (<any>mongoose).Promise    = bluebird
 
         // ${config.database.usename}:${config.database.password}@
         const connectionUrl = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
-        
+
         const connection = mongoose.connect(connectionUrl, {
             useNewUrlParser: true
         })
@@ -41,56 +38,12 @@ class Seeder {
      */
     private seed(): void
     {
-        this.designationSeeder()
-        this.projectTypeSeeder()
+        this.dashboardSeeder()
     }
 
-    private designationSeeder () : void
+    private dashboardSeeder () : void
     {
-        Designation.insertMany([
-            {
-                title: "Chief Executing Officier"
-            },
-            {
-                title: "Director of Technology"
-            },
-            {
-                title: "Technology Manager"
-            },
-            {
-                title: "Project Manager"
-            },
-            {
-                title: "Software Engineer"
-            },
-            {
-                title: "Developer"
-            },
-            {
-                title: "Designer"
-            },
-            {
-                title: "Quality Control"
-            }
-        ])
-    }
-
-    private projectTypeSeeder () : void
-    {
-        ProjectType.insertMany([
-            {
-                title: "Machine Learning"
-            },
-            {
-                title: "Artificial Intelligence"
-            },
-            {
-                title: "Mobile Developmet"
-            },
-            {
-                title: "Web Development"
-            }
-        ])
+        // mongo insert code
     }
 }
 

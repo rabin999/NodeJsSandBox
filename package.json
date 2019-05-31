@@ -14,7 +14,7 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "serve-debug": "nodemon --inspect dist/server.js",
+    "serve-debug": "nodemon --inspect dist/src/server.js",
     "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "author": "FuseMachines",

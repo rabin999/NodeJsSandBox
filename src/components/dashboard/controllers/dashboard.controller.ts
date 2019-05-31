@@ -1,20 +1,19 @@
 import { Request, Response, NextFunction } from "express"
 import HttpException from "../../../exceptions/HttpException"
-import Designation from "../model/designation.model"
+import Dashboard from "../model/dashboard.model"
 
-class DesignationController {
+class DashboardController {
 
     /**
-     * GET /designations
-     * Get all designation
+     * GET /dashboards
+     * Get all dashboard
      */
-    allDesignations = async (req: Request, res: Response, next: NextFunction) => {
+    index = async (req: Request, res: Response, next: NextFunction) => {
         try {
 
-            const designations = await Designation.find({}).select("-__v").lean().exec()
-            return res.json(designations)
+            res.send("This is dashboard page")
 
-        } 
+        }
         catch (error) {
             const err = new HttpException({
                 status: 500,
@@ -25,9 +24,9 @@ class DesignationController {
     }
 
     /**
-     * POST /designations/create
-     * Create a new designation
-     * 
+     * POST /dashboard/create
+     * Create a new dashboard
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -35,13 +34,8 @@ class DesignationController {
     public create = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const newDesignation = await Designation.create({
-                title: req.body.title
-            })
-            return res.status(201).json({
-                message: `Designation ${newDesignation.title} created successfully.`
-            })
-        } 
+            res.send('dashboard create page')
+        }
         catch (error) {
             const err = new HttpException({
                 status: 500,
@@ -52,9 +46,9 @@ class DesignationController {
     }
 
     /**
-     * DELETE designations/id/delete
-     * Delete Designation
-     * 
+     * DELETE dashboard/:id/delete
+     * Delete dashboard
+     *
      * @param  {Request} req
      * @param  {Response} res
      * @param  {NextFunction} next
@@ -62,16 +56,8 @@ class DesignationController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const deletedDesignation = await Designation.findByIdAndDelete({ _id: req.params.id }).lean().exec()
-
-            if (!deletedDesignation) {
-                throw new Error("Problem with deleting project !")
-            }
-
-            return res.json({ 
-                message: `Designation id ${req.params.id} deleted successfully` 
-            })
-        } 
+            res.send("Dashboard delete page")
+        }
         catch (error) {
             const err = new HttpException({
                 status: 500,
@@ -82,4 +68,4 @@ class DesignationController {
     }
 }
 
-export default DesignationController
+export default DashboardController

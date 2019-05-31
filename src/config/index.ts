@@ -9,10 +9,10 @@ dotenv.config({ path: path.resolve(".env") })
 const config = {
 
     // APPLICATION HOST
-    app_host : process.env.HOST || "http://35.163.116.73",
+    app_host : process.env.HOST || "<your domain>",
 
     // APPLICATION NAME
-    app_name: process.env.APP_NAME || "Fuse Bulletin",
+    app_name: process.env.APP_NAME || "App Name",
 
     // PORT
     port: process.env.PORT || 3000,
@@ -32,18 +32,18 @@ const config = {
 
     // DATABASE CONFIG
     database : {
-        name:  process.env.DATABASE_NAME || "client_app",
+        name:  process.env.DATABASE_NAME || "database",
         host: process.env.DATABASE_HOST || "localhost",
         port: process.env.DATABASE_PORT || 27017,
         usename: process.env.DATABASE_USER || "",
         password: process.env.DATABASE_NAME || "",
     },
 
-    session_secret : process.env.SESSION_SECRET || "ashdfjhasdlkjfhalksdjhflak",
-    client_secret : process.env.CLIENT_SECRET || "ashdfjhasdlkjfhalksdjhflak",
+    session_secret : process.env.SESSION_SECRET || "<your session secret key>",
+    client_secret : process.env.CLIENT_SECRET || "<your client secret key>",
     ses_service: {
         enabled: process.env.SES_SERVICE || true,
-        from : "developer@fusemachines.com"
+        from : "<mail from address>"
     },
     /**
      * IMAGE UPLOAD
@@ -52,15 +52,8 @@ const config = {
      * - PROEJCT
     */
     upload: {
-       user: {
-           dest: "uploads/users",
-
-           // MB
-           uploadSize: 1
-       },
-       projectLogo: {
-           dest: "uploads/projects",
-
+       dashboard: {
+           dest: "uploads/dashboards",
            // MB
            uploadSize: 1
        }
@@ -74,20 +67,8 @@ const config = {
     email: {
         gmail: {
             provider: "Gmail",
-            username: "developer@fusemachines.com",
-            password: "developer2019",
-        }
-    },
-
-    /**
-     * PASSPORT CONFIGURATION
-     * ----------------------
-     * TOKEN
-     * - expiresAt in 12 months
-     */
-    passport: {
-        token: {
-            expiresAt: 12
+            username: "<username>",
+            password: "<password>",
         }
     }
 }

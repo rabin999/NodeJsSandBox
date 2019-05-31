@@ -1,6 +1,6 @@
 import HttpException from "./HttpException"
 
-class ProjectTypeNotFoundException extends HttpException {
+class DashboardNotFoundException extends HttpException {
     
     /**
      * @param  {string} id
@@ -9,9 +9,9 @@ class ProjectTypeNotFoundException extends HttpException {
     {
         super({
             status: 404,
-            message: `Project type with id ${id} not found.`
+            message: `Dashboard with id ${id} not found`
         })
     }
 }
 
-export default ProjectTypeNotFoundException
+export default DashboardNotFoundException

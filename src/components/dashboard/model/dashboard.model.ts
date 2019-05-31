@@ -1,12 +1,12 @@
 import mongoose from "mongoose"
 
-const designationSchema = new mongoose.Schema({
+const dashboardSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
     }
-}, { 
+}, {
     timestamps: true
 })
 
-export default mongoose.model("designation", designationSchema)
+export default mongoose.model("dashboard", dashboardSchema)
