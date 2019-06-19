@@ -1,16 +1,17 @@
 import HttpException from "./HttpException"
 
 class FileNotFoundException extends HttpException {
-    private static msg: string;
 
+    /**
+     * @param  {string} message?
+     */
     constructor(message?: string) {
-        FileNotFoundException.msg = "File not found";
-        if (message) {
-            FileNotFoundException.msg = message;
-        }
+
+        const msg: string = message ? message : 'File not found'
+
         super({
             status: 404,
-            message: FileNotFoundException.msg
+            message: msg
         })
     }
 }

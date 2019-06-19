@@ -25,21 +25,31 @@ class BaseRoutes {
 
         // init all api routes without manuall including
         readdir(path.resolve(__dirname, "../components"), (err, items) => {
+
             if (err) {
                 throw new FileNotFoundException("Folder doesn't exist");
             }
-            items.forEach(item => {
-                const pathDir: string = path.resolve(__dirname, "../components/" + item + "/routes/api.routes");
 
-                import(pathDir).then((ComponentRoute) => {
-                    this._route.use("/" + item, new ComponentRoute.default().route)
-                }).catch(err => {
-                    console.log(`Can't find route file ${err}`)
+            items.forEach(item => {
+                
+                /**
+                 * Fetch all component routes from component folder within routes folder 
+                 * 
+                 */
+                const pathDir: string = path.resolve(__dirname, `../components/${item}/routes/api.routes`);
+
+                /**
+                 * Dynamically import all routes
+                 * https://v8.dev/features/dynamic-import
+                 */
+                import(pathDir).then(ComponentRoute => {
+                    this._route.use(`/${item}`, new ComponentRoute.default().route)
+                })
+                .catch(err => {
+                    console.error("Can't find route file %s", err.toString())
                 });
             })
         });
-
-
     }
 
     get route() {
