@@ -1,19 +1,17 @@
 import bluebird from "bluebird"
 import mongoose from "mongoose"
 import config from "../../config"
-import Dashboard from "../../components/dashboard/model/dashboard.model"
 
 class Seeder {
-    constructor () {
+    constructor() {
         this.connectToDatabase()
     }
 
     /**
      * Connect to MongoDB
      */
-    public connectToDatabase()
-    {
-        (<any>mongoose).Promise    = bluebird
+    public connectToDatabase() {
+        (<any>mongoose).Promise = bluebird
 
         // ${config.database.usename}:${config.database.password}@
         const connectionUrl = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
@@ -21,14 +19,14 @@ class Seeder {
         const connection = mongoose.connect(connectionUrl, {
             useNewUrlParser: true
         })
-        .then(() => {
-            console.log("Seeding...")
-            this.seed()
-            console.log("Seed Completed")
-        })
-        .catch(err => {
-            console.log(`MongoDB connection error. Please make sure MongoDB is running ${err}`)
-        })
+            .then(() => {
+                console.log("Seeding...")
+                this.seed()
+                console.log("Seed Completed")
+            })
+            .catch(err => {
+                console.log(`MongoDB connection error. Please make sure MongoDB is running ${err}`)
+            })
 
         mongoose.set("useCreateIndex", true)
     }
@@ -36,15 +34,13 @@ class Seeder {
     /**
      * All Seeder registered here
      */
-    private seed(): void
-    {
+    private seed(): void {
         this.dashboardSeeder()
     }
 
-    private dashboardSeeder () : void
-    {
+    private dashboardSeeder(): void {
         // mongo insert code
     }
 }
 
-new Seeder()
+new Seeder();
