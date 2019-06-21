@@ -65,6 +65,8 @@ class App {
         // * express body parser
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({ extended: true }))
+        this.app.use(expressValidator())
+
        /**
          * Security headers
          * 
@@ -85,8 +87,6 @@ class App {
             includeSubDomains: true
         }))
         this.app.disable('x-powered-by')
-
-        this.app.use(expressValidator())
         this.app.use(cors({
             origin: config.cors_origin
         }))
@@ -102,8 +102,6 @@ class App {
             saveUninitialized: true,
             secret: config.session_secret,
         }))
-
-        // Setup Passport below
     }
 
     private initializeErrorHandling()
