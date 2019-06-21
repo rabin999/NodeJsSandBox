@@ -45,6 +45,10 @@ const config = {
         enabled: process.env.SES_SERVICE || true,
         from : "<mail from address>"
     },
+
+    cors_origin : process.env.CORS_ORIGIN || "https://yourdomain.com",
+    csp_src: process.env.CSP_SRC || "https://*.yourdomain.com",
+
     /**
      * IMAGE UPLOAD
      * ------------

@@ -65,17 +65,42 @@ class App {
         // * express body parser
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({ extended: true }))
+       /**
+         * Security headers
+         * 
+         */
         this.app.use(lusca.xframe("SAMEORIGIN"))
         this.app.use(lusca.xssProtection(true))
+        this.app.use(lusca.nosniff())
+        this.app.use(lusca.csp({
+            policy: {
+                'default-src': config.csp_src ? `'self' ${config.csp_src}` : '*',
+                'img-src': "*",
+                'style-src': '*'
+            }
+        }))
+        this.app.use(lusca.referrerPolicy('same-origin'))
+        this.app.use(lusca.hsts({
+            maxAge: 31536000,
+            includeSubDomains: true
+        }))
+        this.app.disable('x-powered-by')
+
         this.app.use(expressValidator())
-        this.app.use(cors())
+        this.app.use(cors({
+            origin: config.cors_origin
+        }))
+
+        /**
+         * Express seassion
+         */
         this.app.use(session({
             genid: (req) => {
                 return uuid()
             },
             resave: true,
             saveUninitialized: true,
-            secret: config.session_secret
+            secret: config.session_secret,
         }))
 
         // Setup Passport below
