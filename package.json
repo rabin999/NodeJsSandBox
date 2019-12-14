@@ -15,7 +15,9 @@
     "watch-ts": "tsc -w",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "serve-debug": "nodemon --inspect dist/src/server.js",
-    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "FuseMachines",
   "license": "ISC",
@@ -40,7 +42,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.16.1",
-    "express-validator": "^5.3.1",
+    "express-validator": "^6.0.0",
     "firebase-admin": "^7.4.0",
     "lusca": "^1.6.1",
     "mime-types": "^2.1.24",
@@ -57,7 +59,8 @@
     "randomstring": "^1.1.5",
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "snyk": "^1.260.0"
   },
   "devDependencies": {
     "@types/bcrypt-nodejs": "0.0.30",
@@ -84,5 +87,6 @@
     "swagger-ui-express": "^4.0.6",
     "ts-jest": "^24.0.2",
     "tslint": "^5.17.0"
-  }
+  },
+  "snyk": true
 }

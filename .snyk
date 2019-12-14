@@ -1,0 +1,45 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - firebase-admin > @google-cloud/storage > teeny-request > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > @google-cloud/common > teeny-request > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > gcs-resumable-upload > google-auth-library > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > @google-cloud/common > google-auth-library > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/firestore > google-gax > google-auth-library > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > gcs-resumable-upload > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/firestore > google-gax > google-auth-library > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > @google-cloud/common > google-auth-library > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > gcs-resumable-upload > google-auth-library > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > @google-cloud/common > google-auth-library > gcp-metadata > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > gcs-resumable-upload > google-auth-library > gtoken > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > @google-cloud/common > google-auth-library > gtoken > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/firestore > google-gax > google-auth-library > gtoken > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > gcs-resumable-upload > google-auth-library > gcp-metadata > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/firestore > google-gax > google-auth-library > gcp-metadata > gaxios > https-proxy-agent:
+        patched: '2019-12-14T15:44:31.998Z'
+  SNYK-JS-LODASH-450202:
+    - express-validator > lodash:
+        patched: '2019-12-14T15:44:31.998Z'
+    - winston > async > lodash:
+        patched: '2019-12-14T15:44:31.998Z'
+    - '@types/winston > winston > async > lodash':
+        patched: '2019-12-14T15:44:31.998Z'
+    - firebase-admin > @google-cloud/storage > async > lodash:
+        patched: '2019-12-14T15:44:31.998Z'
