@@ -43,3 +43,11 @@ patch:
         patched: '2019-12-14T15:44:31.998Z'
     - firebase-admin > @google-cloud/storage > async > lodash:
         patched: '2019-12-14T15:44:31.998Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2019-12-14T15:45:53.634Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > lodash:
+        patched: '2019-12-14T15:45:53.634Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2019-12-14T15:45:53.634Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > lodash:
+        patched: '2019-12-14T15:45:53.634Z'
