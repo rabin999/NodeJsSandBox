@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.14.0
+version: v1.14.1
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
@@ -51,3 +51,44 @@ patch:
         patched: '2019-12-14T15:45:53.634Z'
     - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > lodash:
         patched: '2019-12-14T15:45:53.634Z'
+  SNYK-JS-LODASH-567746:
+    - express-validator > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - winston > async > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - '@types/winston > winston > async > lodash':
+        patched: '2020-04-30T22:23:18.211Z'
+    - firebase-admin > @google-cloud/storage > async > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/ruby-semver > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > inquirer > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-config > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > graphlib > lodash:
+        patched: '2020-04-30T22:23:18.211Z'
