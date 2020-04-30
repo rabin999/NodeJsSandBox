@@ -60,7 +60,7 @@
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
-    "snyk": "^1.278.2"
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/bcrypt-nodejs": "0.0.30",
