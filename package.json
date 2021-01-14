@@ -34,7 +34,7 @@
     "@types/randomstring": "^1.1.6",
     "@types/uuid": "^3.4.4",
     "@types/winston": "^2.4.4",
-    "aws-sdk": "^2.469.0",
+    "aws-sdk": "^2.814.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",
